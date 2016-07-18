@@ -313,7 +313,7 @@ void SUSY3L::initialize(){
 
     if(_fastSim) {
         //load signal cross section
-        if(_susyProcessName=="T1tttt" || _susyProcessName=="T5qqqqVV" || _susyProcessName=="T5ttttdeg" || _susyProcessName=="T5tttt"){
+        if(_susyProcessName=="T1tttt" || _susyProcessName=="T5qqqqVV" || _susyProcessName=="T5qqqqVV_noDM" || _susyProcessName=="T5ttttdeg" || _susyProcessName=="T5tttt"){
             _dbm->loadDb(_susyProcessName+"Xsect", "GluinoGluinoXsect.db");
         }
         if(_susyProcessName=="T6ttWW"){
@@ -1750,7 +1750,6 @@ bool SUSY3L::wzCRFakeSelection(){
     counter("b-jet multiplicity");
     if(!(_met->pt() > 30 && _met->pt() < 100)) return false;
     counter("MET selection");
-    counter("selected");
   
     //get and sort lepton candidates 
     CandList clist;
@@ -1772,6 +1771,7 @@ bool SUSY3L::wzCRFakeSelection(){
         if(type==kIsTripleFake){ sumTF += getTF_TripleFake(ic); }
     }
     _weight *= sumTF;
+    counter("selected");
        
     fillHistos(false);
     setWorkflow(kGlobal); 
@@ -1842,7 +1842,6 @@ void SUSY3L::fakeCRFakeSelection(){
     counter("b-jet multiplicity");
     if(!(_met->pt() > 30 && _met->pt() < 50)) return;
     counter("MET selection");
-    counter("selected");
  
     //get and sort lepton candidates 
     CandList clist;
@@ -1865,6 +1864,7 @@ void SUSY3L::fakeCRFakeSelection(){
     }
     float restoreWeight = _weight;
     _weight *= sumTF;
+    counter("selected");
        
     fillHistos(false);
     _weight = restoreWeight;
@@ -2764,6 +2764,7 @@ bool SUSY3L::checkMassBenchmark(){
     string s;
     if(_susyProcessName == "T1tttt")   s="_"+os.str()+"_mN_"+os1.str();
     if(_susyProcessName == "T5qqqqVV") s="_"+os.str()+"_mN_"+os1.str();
+    if(_susyProcessName == "T5qqqqVV_noDM") s="_"+os.str()+"_mN_"+os1.str();
     if(_susyProcessName == "T6ttWW") s="_"+os.str()+"_"+os1.str();
     if(_susyProcessName == "T5ttttdeg") s="_"+os.str()+"_"+os1.str();
     
@@ -2786,6 +2787,23 @@ bool SUSY3L::checkMassBenchmark(){
  
     if(_ie==0 && _susyProcessName == "T5qqqqVV") {
         unsigned int p=_sampleName.find("_",10);
+        unsigned int p1=_sampleName.find("_",p+1);
+    	unsigned int p1b=_sampleName.find("_",p1+1);
+        unsigned int p2=_sampleName.find("_",p1b+1);
+	    //cout<<_sampleName<<"   "<<p<<"  "<<p1<<"  "<<p2<<"   "<<_sampleName.substr(p+1,p1-p-1)<<"  "<<_sampleName.substr(p1+1,p2-p1-1)<<endl;
+        float m1=stof( _sampleName.substr(p+1,p1-p-1) );
+        float m2=stof( _sampleName.substr(p1b+1,p2-p1b-1) );
+        cout << m1 << " " << m2 << endl;
+        float xb = _hScanWeight->GetXaxis()->FindBin(m1);
+        float yb = _hScanWeight->GetYaxis()->FindBin(m2);
+        float zb = _hScanWeight->GetZaxis()->FindBin(0.);
+	    //cout<<m1<<"  "<<m2<<"  "<<_hScanWeight2D->GetBinContent(xb,yb)<<endl;
+        //_nProcEvtScan=_hScanWeight2D->GetBinContent(xb,yb);
+	    _nProcEvtScan=_hScanWeight->GetBinContent(xb,yb,zb);
+    }
+ 
+    if(_ie==0 && _susyProcessName == "T5qqqqVV_noDM") {
+        unsigned int p=_sampleName.find("_",13);
         unsigned int p1=_sampleName.find("_",p+1);
     	unsigned int p1b=_sampleName.find("_",p1+1);
         unsigned int p2=_sampleName.find("_",p1b+1);
@@ -2850,7 +2868,7 @@ float SUSY3L::getFastSimXFactor(float dir){
         if(dir == 1) return 1.333;
         else return 0.7312;
     }
-     if(_susyProcessName == "T5qqqqVV" || _susyProcessName == "T5ttttdeg"){
+     if(_susyProcessName == "T5qqqqVV" || _susyProcessName=="T5qqqqVV_noDM" || _susyProcessName == "T5ttttdeg"){
         if(dir == 1) return 1.34;
         else return 0.7275;
     }
