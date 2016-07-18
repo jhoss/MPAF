@@ -97,8 +97,8 @@ SusyModule::loadDBs() {
   _dbm->loadDb("BTagEffC","db2016/bTagEffs.root",(string)("eff_TT_M_c") );
   _dbm->loadDb("BTagEffB","db2016/bTagEffs.root",(string)("eff_TT_M_b") );
 
-  _dbm->loadDb("db2016/T1ttttISR","T1ttttISR.db");
-  _dbm->loadDb("db2016/T5qqqqVV_noDMISR","T5qqqqVV_noDMISR.db");
+  _dbm->loadDb("T1ttttISR","db2016/T1ttttISR.db");
+  _dbm->loadDb("T5qqqqVV_noDMISR","db2016/T5qqqqVV_noDMISR.db");
 
 
 }

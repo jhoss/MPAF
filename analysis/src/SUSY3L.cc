@@ -391,7 +391,7 @@ void SUSY3L::initialize(){
 
     //systematic uncertianties
     if(_runSystematics){
-      if(false) {
+        if(true){
         addManualSystSource("btag",SystUtils::kNone);
         addManualSystSource("jes",SystUtils::kNone);
         addManualSystSource("fakes_EWK",SystUtils::kNone);
@@ -424,9 +424,9 @@ void SUSY3L::initialize(){
         addManualSystSource("wz_extr",SystUtils::kNone);
         addManualSystSource("ttzLO",SystUtils::kNone);
         addManualSystSource("ttwLO",SystUtils::kNone);
-      }
-      addManualSystSource("isr",SystUtils::kNone);
-      //addManualSystSource("ISR",SystUtils::kNone); //used to compute the normalization
+        }
+
+        //addManualSystSource("ISR",SystUtils::kNone); //used to compute the normalization
     }
       
 }
@@ -541,15 +541,15 @@ void SUSY3L::run(){
 
     //ISR variation for fastsim
     if(_fastSim){
-      //if(isInUncProc() && getUncName()=="ISR") 
-	_susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, _weight );
+        //if(isInUncProc() && getUncName()=="ISR") 
+	    _susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, _weight );
         if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kUp ){
-	  //_susyMod->applyISRWeight(0, 1 , _weight); // up variation
-	  _susyMod->applyISRJetWeight(_jetsIdx,1, _sampleName, _weight );
+	        //_susyMod->applyISRWeight(0, 1 , _weight); // up variation
+	        _susyMod->applyISRJetWeight(_jetsIdx,1, _sampleName, _weight );
         }
         else if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kDown ){
-	  //_susyMod->applyISRWeight(0, -1, _weight); // down variation
-	  _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, _weight );
+	        //_susyMod->applyISRWeight(0, -1, _weight); // down variation
+	        _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, _weight );
         }
     }
 /*    
