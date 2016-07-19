@@ -348,12 +348,16 @@ void SUSY3L::initialize(){
     }
 
     else if(_FR=="FR2016"){
-        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
+        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
+        //QCD maps
+        _dbm->loadDb("ElNIsoMC"  , "db2016/qcd_FR_RA7.root", "ElMapPtCorr_non");
+        _dbm->loadDb("MuNIsoMC"  , "db2016/qcd_FR_RA7.root", "MuMapPtCorr_non");
+    
     }
 
 
@@ -452,14 +456,13 @@ void SUSY3L::modifyWeight() {
             LHESYS = 1005;
             Xfactor = getFastSimXFactor(-1);
         }
-        if(!_closure){
         if(LHESYS == 0) {
             _weight *= _vc->get("genWeight");
-            }
+        }
         else {
            //_weight *= _susyMod->getLHEweight(LHESYS);
             _weight *= Xfactor;
-        }}
+        }
 
 	    //pile-up weights
         if(!_closure && _version == 8){
@@ -1345,7 +1348,7 @@ float SUSY3L::getFR(Candidate* cand, int idx) {
     //else db += "NIso";
 
     //distinguish data and mc
-    //if(_vc->get("isData")!=1) db +="MC"; //TODO: enable as soon as MC FR maps are available!
+    if(_vc->get("isData")!=1) db +="MC"; 
 
     if(isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kUp ) db+="Up";
     if(isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kDown ) db+="Do";
@@ -1610,7 +1613,7 @@ void SUSY3L::advancedSelection(int WF){
             if(_isOnZ){setWorkflow(kOnZBaseline_Fake); offset = kOffZSR017;}
             else{setWorkflow(kOffZBaseline_Fake); offset = kOnZSR017_Fake;}
         }
-        if(offset== kOnZSR017 && wf-offset == 16) fill( "SRS", wf-offset-1 , _weight );
+        if((offset== kOnZSR017 || offset== kOnZSR017_Fake ) && wf-offset == 16) fill( "SRS", wf-offset-1 , _weight );
         else fill( "SRS", wf-offset , _weight );
         
         setWorkflow(wf);
@@ -2673,7 +2676,7 @@ void SUSY3L::checkSample(){
     */
 
     //samples yielding fakes
-    if( _sampleName.find("DYJets")!=(size_t)-1 || _sampleName.find("TTJets")!=(size_t)-1 || _sampleName.find("WJets")!=(size_t)-1 || _sampleName.find("TTLep")!=(size_t)-1 || _sampleName.find("TToLeptons")!=(size_t)-1 || _sampleName.find("TBarToLeptons")!=(size_t)-1 || _sampleName.find("TBar_tWch")!=(size_t)-1 || _sampleName.find("T_tWch")!=(size_t)-1 || _sampleName.find("WWTo2L2Nu")!=(size_t)-1 || _sampleName.find("ZZTo2L2Nu")!=(size_t)-1) {
+    if( _sampleName.find("DYJets")!=(size_t)-1 || _sampleName.find("TTJets")!=(size_t)-1 || _sampleName.find("WJets")!=(size_t)-1 || _sampleName.find("TTLep")!=(size_t)-1 || _sampleName.find("TToLeptons")!=(size_t)-1 || _sampleName.find("TBarToLeptons")!=(size_t)-1 || _sampleName.find("TBar_tWch")!=(size_t)-1 || _sampleName.find("T_tWch")!=(size_t)-1 || _sampleName.find("WWTo2L2Nu")!=(size_t)-1 || _sampleName.find("ZZTo2L2Nu")!=(size_t)-1 || _sampleName.find("TT_pow")!=(size_t)-1 ) {
         _fakeSample = true;
         _convSample = false;
         _promptSample = false;
@@ -2929,7 +2932,7 @@ void SUSY3L::systUnc(){
     //flat uncertainties
     
     //uncertainties for all MC non-data driven MC backgrounds and signals
-    if(_sampleName.find("GGHZZ4L") != string::npos || _sampleName.find("VHToNonbb") != string::npos ||_sampleName.find("ZZTo4L") != string::npos ||_sampleName.find("WWZ") != string::npos ||_sampleName.find("WZZ") != string::npos ||_sampleName.find("ZZZ") != string::npos ||_sampleName.find("TTTT") != string::npos ||_sampleName.find("tZq_ll") != string::npos ||_sampleName.find("TGJets") != string::npos ||_sampleName.find("TTGJets") != string::npos ||_sampleName.find("WGToLNuG") != string::npos ||_sampleName.find("ZGTo2LG") != string::npos ||_sampleName.find("TTZ") != string::npos || _sampleName.find("TTW") != string::npos || _sampleName.find("TTHnobb_pow") != string::npos || _sampleName.find("TTLLJets_m1to10") != string::npos || _sampleName.find("T1tttt") != string::npos || _sampleName.find("T6ttWW") != string::npos || _sampleName.find("T5qqqq") != string::npos || _fastSim){
+    if(_sampleName.find("GGHZZ4L") != string::npos || _sampleName.find("VHToNonbb") != string::npos ||_sampleName.find("ZZTo4L") != string::npos ||_sampleName.find("WWZ") != string::npos ||_sampleName.find("WZZ") != string::npos ||_sampleName.find("ZZZ") != string::npos ||_sampleName.find("WWW") != string::npos ||_sampleName.find("TTTT") != string::npos ||_sampleName.find("tZq_ll") != string::npos ||_sampleName.find("TGJets") != string::npos ||_sampleName.find("TTGJets") != string::npos ||_sampleName.find("WGToLNuG") != string::npos ||_sampleName.find("ZGTo2LG") != string::npos ||_sampleName.find("TTZ") != string::npos || _sampleName.find("TTW") != string::npos || _sampleName.find("TTHnobb_pow") != string::npos || _sampleName.find("TTLLJets_m1to10") != string::npos || _sampleName.find("T1tttt") != string::npos || _sampleName.find("T6ttWW") != string::npos || _sampleName.find("T5qqqq") != string::npos || _fastSim){
 
         //lumi
         if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lumiUnc;}
@@ -2943,7 +2946,7 @@ void SUSY3L::systUnc(){
     }
 
     //rare processes
-    if(_sampleName.find("GGHZZ4L") != string::npos || _sampleName.find("VHToNonbb") != string::npos ||_sampleName.find("ZZTo4L") != string::npos ||_sampleName.find("WWZ") != string::npos ||_sampleName.find("WZZ") != string::npos ||_sampleName.find("ZZZ") != string::npos ||_sampleName.find("TTTT") != string::npos ||_sampleName.find("tZq_ll") != string::npos ){
+    if(_sampleName.find("GGHZZ4L") != string::npos || _sampleName.find("VHToNonbb") != string::npos ||_sampleName.find("ZZTo4L") != string::npos ||_sampleName.find("WWZ") != string::npos ||_sampleName.find("WZZ") != string::npos ||_sampleName.find("ZZZ") != string::npos ||_sampleName.find("WWW") != string::npos ||_sampleName.find("TTTT") != string::npos ||_sampleName.find("tZq_ll") != string::npos ){
         //rare x-section
         if((isInUncProc() &&  getUncName()=="rare") && SystUtils::kUp   == getUncDir() ){_weight *= 1+rareUnc;}
 	    if((isInUncProc() &&  getUncName()=="rare") && SystUtils::kDown == getUncDir() ){_weight *= 1-rareUnc;}
