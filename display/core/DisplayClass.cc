@@ -3099,7 +3099,7 @@ DisplayClass::adjustLegend(int iobs, bool skipCoords) {
 	
   if(!_mcOnly){
     if(_closure) _leg->AddEntry(_gData,"predicted", legOpt.c_str() );
-    if(_nlo_vs_lo) _leg->AddEntry(_gData,"NLO", legOpt.c_str() );
+    else if(_nlo_vs_lo) _leg->AddEntry(_gData,"NLO", legOpt.c_str() );
     else _leg->AddEntry(_gData,"data", legOpt.c_str() );
     countEntries +=1;
   }

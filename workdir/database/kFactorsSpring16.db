@@ -44,6 +44,7 @@ TTJets							1.00
 TTJets_LO						1.00
 TTJets_DiLepton                 1.00
 TT_pow							1.00
+TT_pow_ext4 					1.00
 TT_pow_50ns						1.00
 TTLep_pow						1.00
 TToLeptons_tch						1.00
@@ -65,6 +66,7 @@ DYJetsToLL_M50_LO						1.00
 DYJetsToLL_M50_PUflat1050				1.00
 DYJetsToLL_LO_M50_50ns					1.00
 DYJetsToLL_M10to50					1.00
+DYJetsToLL_M10to50_LO					1.00
 DYJetsToLL_M10to50_50ns					1.00
 WJetsToLNu_HT100to200					1.23
 WJetsToLNu_HT200to400					1.23
