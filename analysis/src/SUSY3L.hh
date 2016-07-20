@@ -74,6 +74,7 @@ private:
     void fillValidationHistos(string reg);
     float getMT2();
     void sortSelectedLeps(CandList leps, std::vector<unsigned int> lepsIdx);
+    void sortCand(CandList leps, std::vector<unsigned int> lepsIdx);
     float lowestOssfMll(CandList leps);
     void registerTriggerVars();
     void systUnc();
@@ -188,6 +189,7 @@ private:
     //vectors for electron, muon, and tau candidates
     std::vector<int> _tauIdx;
     std::vector<unsigned int> _lepsIdx;
+    std::vector<unsigned int> _lepCandIdx;
     std::vector<unsigned int> _looseLepsIdx;
     std::vector<unsigned int> _looseLepsPtCutIdx;
     std::vector<unsigned int> _looseLepsPtCorrCutIdx;
@@ -221,6 +223,7 @@ private:
     CandList _jets;
     CandList _bJets;
     CandList _leps;
+    CandList _lepCand;
     CandList _looseLeps;
     CandList _looseLepsPtCut;
     CandList _looseLepsPtCorrCut;
@@ -237,6 +240,7 @@ private:
     CandList _zPair;
     Candidate* _l1Cand;
     Candidate* _l2Cand;
+    Candidate* _l3Cand;
     
   	bool _isOnZ;
 
@@ -248,6 +252,9 @@ private:
     float _MT;
     float _zMass;
     float _zPt;
+    int _l1CandIdx;
+    int _l2CandIdx;
+    int _l3CandIdx;
     int _idxL1;
     int _idxL2;
     int _idxL3;

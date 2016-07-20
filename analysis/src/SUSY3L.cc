@@ -573,9 +573,38 @@ void SUSY3L::run(){
         }
     } 
     counter("lepton SF");
-
+*/
+/*
     //HLT scale factors
-    if(!_vc->get("isData") && _fastSim){
+    //fullSim
+    if(!_isData) {
+        //if not both trailing legs above the HTL thresholds, start looking at the HLT efficiency, otherwise 100%
+        if(_l1Cand->pt()>20 && _l2Cand->pt()>15 &&  _l3Cand->pt()>15) {
+            if(!isInUncProc()) {
+                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
+                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight);
+            }
+            else if(isInUncProc() && getUncName()=="hlt_eff" && getUncDir()==SystUtils::kUp) {
+                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
+                    _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight,1);
+            }
+            else if(isInUncProc() && getUncName()=="hlt_eff" && getUncDir()==SystUtils::kDown) {
+                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
+                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight,-1);
+            }       
+            else {
+                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
+                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight);  
+            }
+        }
+    }
+*/
+ 
+
+
+
+    //fastSim
+/*    if(!_vc->get("isData") && _fastSim){
         //fastSim scale factors and flavor and pt dependent shape uncertainty
         _weight*=_susyMod->getWeightFastSimHltSFRA7(_tightLepsPtCutMllCut, _HT);
         // //uncertainties
@@ -583,9 +612,9 @@ void SUSY3L::run(){
 	        _weight *= _susyMod->getVarWeightFastSimHltSFRA7(_tightLepsPtCutMllCut, _HT, 1);
 	    if((isInUncProc() &&  getUncName()=="fs_hlt") && SystUtils::kDown==getUncDir() )
 	        _weight *= _susyMod->getVarWeightFastSimHltSFRA7(_tightLepsPtCutMllCut, _HT, -1);
-    } 
+    } */
     counter("HLT SF");
-*/
+
 
     //end event reweighting ////////////////////////////////////////////////////
   
@@ -843,6 +872,10 @@ void SUSY3L::collectKinematicObjects(){
     _leps.clear();
     _lepsIdx.clear();
 
+    _lepCand.clear();
+    _lepCandIdx.clear();
+
+
     _jets.clear();
     _jetsIdx.clear();
     _bJets.clear();
@@ -982,6 +1015,31 @@ void SUSY3L::collectKinematicObjects(){
         ext += ((SystUtils::kUp==getUncDir())?"_jecUp":"_jecDown");
     _met = Candidate::create(_vc->get(ext+"_pt"), _vc->get(ext+"_phi") );
     _metPt = _met->pt();
+
+    //create lepton candidates
+    if(_tightLepsPtCutMllCut.size()>2){
+        _l1Cand = _tightLepsPtCutMllCut[0]; _l1CandIdx = _tightLepsPtCutMllCutIdx[0];
+        _l2Cand = _tightLepsPtCutMllCut[1]; _l2CandIdx = _tightLepsPtCutMllCutIdx[1];
+        _l3Cand = _tightLepsPtCutMllCut[2]; _l3CandIdx = _tightLepsPtCutMllCutIdx[2];
+   }
+    else if(_tightLepsPtCutMllCut.size()+_fakableNotTightLepsPtCut.size()>2){
+        //merge candidate lists
+        CandList lepList;
+        lepList.insert(lepList.end(), _tightLepsPtCutMllCut.begin(), _tightLepsPtCutMllCut.end() );
+        lepList.insert(lepList.end(), _fakableNotTightLepsPtCut.begin(), _fakableNotTightLepsPtCut.end() );
+        vector<unsigned int> lepListIdx;
+        lepListIdx.insert(lepListIdx.end(), _tightLepsPtCutMllCutIdx.begin(), _tightLepsPtCutMllCutIdx.end());
+        lepListIdx.insert(lepListIdx.end(), _fakableNotTightLepsPtCutIdx.begin(), _fakableNotTightLepsPtCutIdx.end());
+        
+        sortCand(lepList,lepListIdx);       
+        _l1Cand = _lepCand[0]; _l1CandIdx = _lepCandIdx[0];
+        _l2Cand = _lepCand[1]; _l2CandIdx = _lepCandIdx[1];
+        _l3Cand = _lepCand[2]; _l3CandIdx = _lepCandIdx[2];
+    }
+    else return;
+ 
+    if(!(_l1Cand->pt()>_l2Cand->pt() && _l1Cand->pt()>_l3Cand->pt() && _l2Cand->pt()>_l3Cand->pt())){cout << "WARNING: lepton candiates not pt ordered" << endl;} 
+
 
 }
 
@@ -2598,6 +2656,51 @@ void SUSY3L::sortSelectedLeps(CandList leps, std::vector<unsigned int> lepsIdx){
             }
             _leps.push_back(leps_tmp[i_save]);
             _lepsIdx.push_back(lepsIdx_tmp[i_save]);
+            
+            leps_tmp.clear();
+            lepsIdx_tmp.clear();
+            leps_tmp = leps_tmp2;
+            lepsIdx_tmp = lepsIdx_tmp2;
+            leps_tmp2.clear();
+            lepsIdx_tmp2.clear();
+        }
+ 
+}
+
+//____________________________________________________________________________
+void SUSY3L::sortCand(CandList leps, std::vector<unsigned int> lepsIdx){
+        
+        CandList leps_tmp;
+        CandList leps_tmp2;
+        std::vector<unsigned int> lepsIdx_tmp;
+        std::vector<unsigned int> lepsIdx_tmp2;
+        
+        for(size_t il=0;il<leps.size();il++){
+            leps_tmp.push_back(leps[il]);
+            lepsIdx_tmp.push_back(lepsIdx[il]);
+        }
+        _lepCand.clear();
+        _lepCand.clear();
+
+        while(leps_tmp.size()>0){
+            float pt = -1;
+            float pt_tmp = -1;
+            size_t i_save = -1;
+            for(size_t i=0; i < leps_tmp.size(); i++){
+                pt_tmp = leps_tmp[i]->pt();
+                if(pt_tmp > pt){
+                    pt = pt_tmp;
+                    i_save = i;
+                }
+            }
+            for(size_t i=0; i < leps_tmp.size(); i++){
+                if(i!=i_save){
+                    leps_tmp2.push_back(leps_tmp[i]);
+                    lepsIdx_tmp2.push_back(lepsIdx_tmp[i]);
+                }
+            }
+            _lepCand.push_back(leps_tmp[i_save]);
+            _lepCandIdx.push_back(lepsIdx_tmp[i_save]);
             
             leps_tmp.clear();
             lepsIdx_tmp.clear();
