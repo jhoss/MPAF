@@ -65,9 +65,8 @@ void SUSY3L::initialize(){
     //_vTR_lines.push_back("HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
     _vTR_lines.push_back("HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
     _vTR_lines.push_back("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-    _vTR_lines.push_back("HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");
-
-    //_vTR_lines.push_back("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");  
+    //_vTR_lines.push_back("HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v");
+    _vTR_lines.push_back("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");  
     
     //isolated triggers 2015
     //_vTR_lines.push_back("HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");                  //no longer in 2016 menu
@@ -574,33 +573,6 @@ void SUSY3L::run(){
     } 
     counter("lepton SF");
 */
-/*
-    //HLT scale factors
-    //fullSim
-    if(!_isData) {
-        //if not both trailing legs above the HTL thresholds, start looking at the HLT efficiency, otherwise 100%
-        if(_l1Cand->pt()>20 && _l2Cand->pt()>15 &&  _l3Cand->pt()>15) {
-            if(!isInUncProc()) {
-                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
-                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight);
-            }
-            else if(isInUncProc() && getUncName()=="hlt_eff" && getUncDir()==SystUtils::kUp) {
-                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
-                    _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight,1);
-            }
-            else if(isInUncProc() && getUncName()=="hlt_eff" && getUncDir()==SystUtils::kDown) {
-                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
-                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight,-1);
-            }       
-            else {
-                _susyMod->applyHLTWeight(_l1Cand->pt(), _l1Cand->eta(), _l1Cand->phi(),
-                   _l2Cand->pt(), _l2Cand->eta(), _l2Cand->phi(), _HT, _weight);  
-            }
-        }
-    }
-*/
- 
-
 
 
     //fastSim
@@ -2390,7 +2362,7 @@ bool SUSY3L::ptSelection(CandList leptons){
     //offline HT below HT trigger plateau
     if(_HT<400){
         //leading leg
-        if(std::abs(leptons[0]->pdgId())==13 && leptons[0]->pt()<20) return false;
+        if(std::abs(leptons[0]->pdgId())==13 && leptons[0]->pt()<25) return false;
         if(std::abs(leptons[0]->pdgId())==11 && leptons[0]->pt()<25) return false;
         //sub-leading leg
         if(std::abs(leptons[1]->pdgId())==13 && leptons[1]->pt()<10) return false;
