@@ -1169,7 +1169,7 @@ SusyModule::applyLepSfRA7(const CandList& cands){
       sf *= _dbm->getDBValue("muSIPSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
       //TODO: uncomment when ISO SF avaibale sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
     }
-        
+       
     if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;
       cout << "flavor: " << cand->pdgId() << endl;
       cout << "pt: " << cand->pt() << endl;
@@ -2409,65 +2409,65 @@ void
 SusyModule::initPUWeights() {
 
   _puWeights.push_back(1.0);
-  _puWeights.push_back(3.153000427291265);
-  _puWeights.push_back(2.4535501340758543);
-  _puWeights.push_back(2.353696182351581);
-  _puWeights.push_back(2.3718057802881676);
-  _puWeights.push_back(2.3508262193470397);
-  _puWeights.push_back(2.291773427755106);
-  _puWeights.push_back(2.129929297304804);
-  _puWeights.push_back(1.9422796094930384);
-  _puWeights.push_back(1.7126175249202766);
-  _puWeights.push_back(1.4622401225778663);
-  _puWeights.push_back(1.2063711142884181);
-  _puWeights.push_back(0.9608504360968657);
-  _puWeights.push_back(0.7484941355600901);
-  _puWeights.push_back(0.5769889517104192);
-  _puWeights.push_back(0.4315759540480359);
-  _puWeights.push_back(0.3195820162866148);
-  _puWeights.push_back(0.2306052595765186);
-  _puWeights.push_back(0.1691819686464576);
-  _puWeights.push_back(0.12324466445693416);
-  _puWeights.push_back(0.08833641123547825);
-  _puWeights.push_back(0.06306193566475429);
-  _puWeights.push_back(0.047857788612281564);
-  _puWeights.push_back(0.034655984107483044);
-  _puWeights.push_back(0.02358209210941948);
-  _puWeights.push_back(0.019535383939466185);
-  _puWeights.push_back(0.01500976654907348);
-  _puWeights.push_back(0.009407396052837736);
-  _puWeights.push_back(0.006332906010381258);
-  _puWeights.push_back(0.008524617116368491);
-  _puWeights.push_back(0.003145186350322339);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.006930381551001214);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(0.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
-  _puWeights.push_back(1.0);
+  _puWeights.push_back( 0.046904649804193066);
+  _puWeights.push_back( 0.09278031810949669);
+  _puWeights.push_back( 0.18880389403907694);
+  _puWeights.push_back( 0.3514757265099305);
+  _puWeights.push_back( 0.557758357976481);
+  _puWeights.push_back( 0.7693577917575528);
+  _puWeights.push_back( 0.9666548740765918);
+  _puWeights.push_back( 1.145319485841941);
+  _puWeights.push_back( 1.2648398335691222);
+  _puWeights.push_back( 1.3414360633779425);
+  _puWeights.push_back( 1.3679594451533137);
+  _puWeights.push_back( 1.362759399034107);
+  _puWeights.push_back( 1.327376308549365);
+  _puWeights.push_back( 1.2613315166803767);
+  _puWeights.push_back( 1.196440614259811);
+  _puWeights.push_back( 1.1139701579261285);
+  _puWeights.push_back( 1.029953473266092);
+  _puWeights.push_back( 0.9499371225384508);
+  _puWeights.push_back( 0.8650456207995321);
+  _puWeights.push_back( 0.7851579627730857);
+  _puWeights.push_back( 0.7104602883630896);
+  _puWeights.push_back( 0.6454503663312138);
+  _puWeights.push_back( 0.5827160708961265);
+  _puWeights.push_back( 0.527376483837914);
+  _puWeights.push_back( 0.4700331217669938);
+  _puWeights.push_back( 0.4271753119677936);
+  _puWeights.push_back( 0.3869926520067443);
+  _puWeights.push_back( 0.35986269245880403);
+  _puWeights.push_back( 0.3280226115374019);
+  _puWeights.push_back( 0.2995626735821264);
+  _puWeights.push_back( 0.29695297220375283);
+  _puWeights.push_back( 0.2904602474734967);
+  _puWeights.push_back( 0.27797348557821827);
+  _puWeights.push_back( 0.27285575884404983);
+  _puWeights.push_back( 0.2696769830193652);
+  _puWeights.push_back( 0.2834280746705423);
+  _puWeights.push_back( 0.3079991295527812);
+  _puWeights.push_back( 0.2958183730167929);
+  _puWeights.push_back( 0.3281547943587132);
+  _puWeights.push_back( 0.34428579006474574);
+  _puWeights.push_back( 0.34709355767303973);
+  _puWeights.push_back( 0.5916367460335905);
+  _puWeights.push_back( 0.4991935044658422);
+  _puWeights.push_back( 0.2689257936516321);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 0.690242870372522);
+  _puWeights.push_back( 2.0707286111175662);
+  _puWeights.push_back( 0.2958183730167952);
+  _puWeights.push_back( 0.8874551190503855);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 0.0);
+  _puWeights.push_back( 1.0);
+  _puWeights.push_back( 1.0);
 
 }
 
@@ -2657,6 +2657,8 @@ SusyModule::applyLeptonSF(float pt, float eta, float pdgId, bool isEmuIso, float
 
   if(std::abs(pdgId)==11) {
     weight *= getSingleSF("eleIdSFIsoDb", pt, std::abs(eta), var);
+    weight *= getSingleSF("eleConvSFIsoDb", pt, std::abs(eta), var);
+    weight *= getSingleSF("eleChargeSFIsoDb", pt, std::abs(eta), var);
      if(isEmuIso)
        weight *= getSingleSF("eleIsoSFIsoDb", pt, std::abs(eta), var);
      else
