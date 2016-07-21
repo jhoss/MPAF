@@ -1,16 +1,18 @@
 #!/bin/bash
 
-mainFile=${MPAF}/workdir/stats/SUSY3L/merged_v2_4fb_Bkg.dat
+AN=$1
+
+mainFile=${MPAF}/workdir/stats/${AN}/merged_6p3_Bkg.dat
 
 ## first merge backgrounds
-python ${MPAF}/scripts/script_scan/step3/mergeBkgs.py ${mainFile} ${MPAF}/workdir/stats/SUSY3L/3l_v2_scanBkg_
+python ${MPAF}/scripts/script_scan/step3/mergeBkgs.py ${mainFile} ${MPAF}/workdir/stats/${AN}/3l_v2_scanBkg_
 
 ## merge signals and backgrounds
 for i in `ls $MPAF/workdir/stats/SUSY3L/3l_scanSig_*.dat`; do
 
     red=${i#$MPAF/workdir/stats/SUSY3L/3l_scanSig_}
     echo $red
-    python ${MPAF}/scripts/script_scan/step3/addSample.py $mainFile $i $MPAF/workdir/stats/SUSY3L/merged_v2_4fb_$red
+    python ${MPAF}/scripts/script_scan/step3/addSample.py $mainFile $i $MPAF/workdir/stats/${AN}/merged_6p3_$red
 
 done
 
@@ -22,7 +24,6 @@ done
 
 #past string to next step
 echo $files
-
 
 
 

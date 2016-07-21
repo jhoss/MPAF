@@ -61,15 +61,17 @@ def retrieveYields(inputFile):
             if 'global_' in curCateg and 'BR' not in curCateg and 'Fake' not in curCateg and 'mId' not in curCateg and "WZCR" not in curCateg:
                 goodLines[ curCateg ][sample]=line
                 if 'Unc' not in curCateg:
-                    totYield['global'][sample] += float(line.split()[2])
-                    totNGen['global'][sample]  += float(line.split()[3])
-                    totUnc['global'][sample]   += float(line.split()[4])*float(line.split()[4])
+                    if sample in totYield['global'].keys():
+                        totYield['global'][sample] += float(line.split()[2])
+                        totNGen['global'][sample]  += float(line.split()[3])
+                        totUnc['global'][sample]   += float(line.split()[4])*float(line.split()[4])
                 else:
                     p=curCateg.find('Unc')
                     redCateg='global\t'+curCateg[p:]
-                    totYield[redCateg][sample] += float(line.split()[2])
-                    totNGen[redCateg][sample]  += float(line.split()[3])
-                    totUnc[redCateg][sample]   += float(line.split()[4])*float(line.split()[4])
+                    if sample in totYield[redCateg].keys():
+                        totYield[redCateg][sample] += float(line.split()[2])
+                        totNGen[redCateg][sample]  += float(line.split()[3])
+                        totUnc[redCateg][sample]   += float(line.split()[4])*float(line.split()[4])
 
             elif 'global_' in curCateg:
                 goodLines[ curCateg ][sample]=line

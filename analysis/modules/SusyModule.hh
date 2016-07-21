@@ -4,6 +4,7 @@
 #include "analysis/core/VarClass.hh"
 #include "analysis/core/MPAF.hh"
 #include "analysis/modules/BTagCalibrationStandalone.hh"
+#include "analysis/modules/HLTEfficiency.hh"
 #include "analysis/tools/Candidate.hh"
 #include "analysis/utils/KineUtils.hh"
 #include "analysis/utils/mt2_bisect.h"
@@ -40,7 +41,7 @@ public:
   SusyModule(VarClass* vc, DataBaseManager* dbm);
   ~SusyModule();
 
-  bool elHLTEmulSel(int idx, bool withIso, string branch = "LepGood") const;
+  bool elHLTEmulSel(int idx, bool withIso, string branch = "LepGood", bool v1=false) const;
   bool elHLTEmulSelIso(int idx, int mvaWP = kLooseHT, string branch = "LepGood") const;
   bool elIdSel(const Candidate* c, int idx, int wp, int mvaWp = kTight, bool chCut = true, bool invSIP = false, bool LepMVA = false, string branch = "LepGood") const;
   bool elMvaSel(int elIdx, int wp, string branch = "LepGood") const;
@@ -63,7 +64,7 @@ public:
 		 CandList& cleanBJets, vector<pair<string,unsigned int> >& bJetIdxs,
 		 CandList& lepJets, vector<pair<string,unsigned int> >& lepJetsIdxs,
 		 float thr, float bthr, bool isJESUnc = false, int dir = 0);
-  void ptJets(CandList allJets, vector<pair<string, unsigned int> > allJetIdxs,
+  void ptJets(const CandList* allJets, const vector<pair<string, unsigned int> >& allJetIdxs,
               CandList& jets, vector<pair<string, unsigned int> >& jetIdxs, float thr = 40);
 
   void cleanLeps(CandList& tightLeps, CandList* vetoLeps);
@@ -144,7 +145,7 @@ public:
 
   void applyISRWeight(unsigned int process, int var, float& weight);
   void applyISRJetWeight(const vector<pair<string, unsigned int> >& jetIdxs,
-			 int var, const string& signame, float& weight );
+			 int var, const string& signame, bool isRA5, float& weight );
 
   float bTagSF(string dbKeyEffB, string dbKeyEffL, string dbKeyCsv,
                CandList& jets , vector<unsigned int>& jetIdx ,
@@ -152,6 +153,20 @@ public:
   float bTagMediumEfficiency(string dbKeyB, string dbKeyLight, Candidate* jet, int jetIdx, bool isBTagged);
   float bTagMediumScaleFactor(string dbKey, Candidate* jet, int jetIdx, bool isBTagged, int st);
   float bTagScaleFactor(string dbKey, unsigned int op, unsigned int mt, int st, unsigned int fl);
+
+  void applyHLTWeight(float pt1, float eta1, int pdgId1,
+		    float pt2, float eta2, int pdgId2, 
+		    float ht, float& weight, int var=0);
+  void applyHLTWeightRA7(float pt1, float eta1, int pdgId1,
+			 float pt2, float eta2, int pdgId2, 
+			 float pt3, float eta3, int pdgId3, 
+			 float ht, float& weight, int var);
+
+  bool vetoFSBadJetEvent(bool isJESVar, int dir, const CandList& leptons);
+  
+  float getFSMETWeight(int wf, const string& sname, const string& sp,
+		       bool isRA5, int var );
+
 
   enum {kDenom=0,
 	kVLoose,
@@ -180,13 +195,14 @@ private:
   void loadDBs();
   void initPUWeights(); 
 
- 
   void isrWeight(int var, float pt, float& weight);
   CandList collectGenParticles(int pdgId, int status);
 
  //const
   VarClass* _vc;
   DataBaseManager* _dbm;
+
+  HLTEfficiency* _hltEff;
 
   BTagCalibration* _calib;
   BTagCalibrationReader* _reader_b_cv;

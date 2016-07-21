@@ -1,11 +1,12 @@
 #include "analysis/modules/SusyModule.hh"
+#include <boost/property_tree/json_parser.hpp>
 
 SusyModule::SusyModule(VarClass* vc):
   _vc(vc),_dbm(nullptr)
 {
   defineLeptonWPS();
-  
-}
+ 
+ }
 
 SusyModule::SusyModule(VarClass* vc, DataBaseManager* dbm):
   _vc(vc), _dbm(dbm)
@@ -15,6 +16,10 @@ SusyModule::SusyModule(VarClass* vc, DataBaseManager* dbm):
   loadBTagReader();
   loadBTagFastSimReader();
   initPUWeights();
+
+  string name=(string)(getenv("MPAF")) + "/workdir/database/db2016/HLT_Efficiencies_4fb_2016.root";
+  std::cout<<" ============================================== >> "<<name<<std::endl;
+  _hltEff= new HLTEfficiency(name);
 }
 
 SusyModule::~SusyModule() {
@@ -52,7 +57,7 @@ void
 SusyModule::loadBTagReader() {
 
   // setup calibration readers
-  string filename=(string) getenv("MPAF") + "/workdir/database/db2016/CSVv2_4invfb.csv";
+  string filename=(string) getenv("MPAF") + "/workdir/database/db2016/CSVv2_ichep.csv";
   _calib=new BTagCalibration("csvv2", filename.c_str());
   _reader_b_cv=new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "central");
   _reader_b_up=new BTagCalibrationReader(BTagEntry::OP_MEDIUM, "up"     );
@@ -78,20 +83,6 @@ SusyModule::loadBTagReader() {
 
 void
 SusyModule::loadDBs() {
-
-  //_dbm->loadDb("PileupWeights.root",""); -> done with trees
-
-  //HLT scale factors
-  //_dbm->loadDb("hltDEG","hltSFDoubleEG.db");
-  //_dbm->loadDb("hltDMu","hltSFDoubleMu.db");
-  //_dbm->loadDb("hltSEle","hltSFSingleEle.db");
-  //_dbm->loadDb("hltSMu","hltSFSingleMu.db");
-  
-  //lepton scale factors
-  //_dbm->loadDb("eleSFDb","electronSF.db");
-  //_dbm->loadDb("muSFDb","muonSF.db");
-  //_dbm->loadDb("tauSFDb","tauSF.db");
-
  
   _dbm->loadDb("BTagEffUDSG","db2016/bTagEffs.root",(string)("eff_TT_M_udsg") );
   _dbm->loadDb("BTagEffC","db2016/bTagEffs.root",(string)("eff_TT_M_c") );
@@ -99,7 +90,8 @@ SusyModule::loadDBs() {
 
   _dbm->loadDb("T1ttttISR","db2016/T1ttttISR.db");
   _dbm->loadDb("T5qqqqVV_noDMISR","db2016/T5qqqqVV_noDMISR.db");
-
+  _dbm->loadDb("T1ttttISR_RA5","db2016/T1ttttISR_RA5.db");
+  _dbm->loadDb("T5qqqqVV_noDMISR_RA5","db2016/T5qqqqVV_noDMISR_RA5.db");
 
 }
 
@@ -162,16 +154,6 @@ SusyModule::defineLeptonWPS() {
   _tChWP[kTight]=1;
 
   //el mva id ======================
-  //Phys14 50ns?
-  // _elMvaIdWP[kEBC][kLoose] = -0.11;
-  // _elMvaIdWP[kEBF][kLoose] = -0.35;
-  // _elMvaIdWP[kEE ][kLoose] = -0.55;
-
-  // _elMvaIdWP[kEBC][kTight] = 0.73;
-  // _elMvaIdWP[kEBF][kTight] = 0.57;
-  // _elMvaIdWP[kEE ][kTight] = 0.05;
-
-
   _elMvaIdWP[kEBC][kInSitu] = -0.363;
   _elMvaIdWP[kEBF][kInSitu] = -0.579;
   _elMvaIdWP[kEE ][kInSitu] = -0.623;
@@ -229,8 +211,8 @@ bool
 SusyModule::multiIsoSel(int idx, int wp, string branch) const {
 
   if(_vc->get(branch + "_miniRelIso"  , idx) < _multiIsoWP[kMiniIso][wp] &&
-    (_vc->get(branch + "_jetPtRatiov2", idx) > _multiIsoWP[kPtRatio][wp] ||
-     _vc->get(branch + "_jetPtRelv2"  , idx) > _multiIsoWP[kPtRel]  [wp] )) return true;
+     (_vc->get(branch + "_jetPtRatiov2", idx) > _multiIsoWP[kPtRatio][wp] ||
+      _vc->get(branch + "_jetPtRelv2"  , idx) > _multiIsoWP[kPtRel]  [wp] )) return true;
   
   return false;
 }
@@ -360,66 +342,69 @@ SusyModule::elIdSel(const Candidate* c, int idx, int wp, int mvaWp, bool chCut, 
 }
 
 bool
-SusyModule::elHLTEmulSel(int idx, bool withIso, string branch) const {
-/*
+SusyModule::elHLTEmulSel(int idx, bool withIso, string branch, bool v1) const {
+  
+  if(v1) {
     if(std::abs(_vc->get(branch + "_eta", idx)) < 1.479) {
-        if(         _vc->get(branch + "_hadronicOverEm", idx)  > 0.08  ) return false;
-        if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) > 0.01  ) return false;
-        if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) > 0.04  ) return false;
-        if(std::abs(_vc->get(branch + "_eInvMinusPInv" , idx)) > 0.01  ) return false;
-        if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  > 0.011 ) return false;
+      if(         _vc->get(branch + "_hadronicOverEm", idx)  > 0.08  ) return false;
+      if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) > 0.01  ) return false;
+      if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) > 0.04  ) return false;
+      if(std::abs(_vc->get(branch + "_eInvMinusPInv" , idx)) > 0.01  ) return false;
+      if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  > 0.011 ) return false;
     }
     else {
-        if(         _vc->get(branch + "_hadronicOverEm", idx)  > 0.08  ) return false;
-        if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) > 0.01  ) return false;
-        if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) > 0.08  ) return false;
-        if(std::abs(_vc->get(branch + "_eInvMinusPInv" , idx)) > 0.01  ) return false;
-        if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  > 0.031 ) return false;
+      if(         _vc->get(branch + "_hadronicOverEm", idx)  > 0.08  ) return false;
+      if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) > 0.01  ) return false;
+      if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) > 0.08  ) return false;
+      if(std::abs(_vc->get(branch + "_eInvMinusPInv" , idx)) > 0.01  ) return false;
+      if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  > 0.031 ) return false;
     }
-*/    
-    
-    long int lumi = 1270;
-    long int evt = 420400;
-    bool debug = false;
-  
-    if(std::abs(_vc->get(branch + "_eta", idx)) < 1.479) {
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "entering emu sel (central)" << endl;}}
-        if(         _vc->get(branch + "_hadronicOverEm", idx)  >= 0.10  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _hadronicOverEm" << endl;}}
-        if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) >= 0.01  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dEtaScTrkIn" << endl;}}
-        if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) >= 0.04  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dPhiScTrkIn" << endl;}}
-        if(         _vc->get(branch + "_eInvMinusPInv" , idx)  <= -0.05  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
-        if(         _vc->get(branch + "_eInvMinusPInv" , idx)  >= 0.01  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
-        if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  >= 0.011 ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing trigger emulation" << endl;}}
-    }
-    else {
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "entering emu sel (central)" << endl;}}
-        if(         _vc->get(branch + "_hadronicOverEm", idx)  >= 0.07  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _hadronicOverEm" << endl;}}
-        if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) >= 0.008  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dEtaScTrkIn" << endl;}}
-        if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) >= 0.07  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dPhiScTrkIn" << endl;}}
-        if(         _vc->get(branch + "_eInvMinusPInv" , idx)  <= -0.05  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
-        if(         _vc->get(branch + "_eInvMinusPInv" , idx)  >= 0.005  ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
-        if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  >= 0.03 ) return false;
-                if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing trigger emulation" << endl;}}
-    }
-  
-    if(!elMvaSel(idx, kLoose, branch)                                ) return false;
-  
-    if(withIso) {
-        if(!elHLTEmulSelIso(idx, kLooseHT, branch)) return false;
-    }
-
     return true;
+  }
+  
+
+  long int lumi = 1270;
+  long int evt = 420400;
+  bool debug = false;
+  
+  if(std::abs(_vc->get(branch + "_eta", idx)) < 1.479) {
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "entering emu sel (central)" << endl;}}
+    if(         _vc->get(branch + "_hadronicOverEm", idx)  >= 0.10  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _hadronicOverEm" << endl;}}
+    if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) >= 0.01  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dEtaScTrkIn" << endl;}}
+    if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) >= 0.04  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dPhiScTrkIn" << endl;}}
+    if(         _vc->get(branch + "_eInvMinusPInv" , idx)  <= -0.05  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
+    if(         _vc->get(branch + "_eInvMinusPInv" , idx)  >= 0.01  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
+    if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  >= 0.011 ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing trigger emulation" << endl;}}
+  }
+  else {
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "entering emu sel (central)" << endl;}}
+    if(         _vc->get(branch + "_hadronicOverEm", idx)  >= 0.07  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _hadronicOverEm" << endl;}}
+    if(std::abs(_vc->get(branch + "_dEtaScTrkIn"   , idx)) >= 0.008  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dEtaScTrkIn" << endl;}}
+    if(std::abs(_vc->get(branch + "_dPhiScTrkIn"   , idx)) >= 0.07  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _dPhiScTrkIn" << endl;}}
+    if(         _vc->get(branch + "_eInvMinusPInv" , idx)  <= -0.05  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
+    if(         _vc->get(branch + "_eInvMinusPInv" , idx)  >= 0.005  ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing _eInvMinusPInv" << endl;}}
+    if(         _vc->get(branch + "_sigmaIEtaIEta" , idx)  >= 0.03 ) return false;
+    if(debug){if(_vc->get("evt") == evt && _vc->get("lumi") == lumi){cout << "passing trigger emulation" << endl;}}
+  }
+  
+  if(!elMvaSel(idx, kLoose, branch)                                ) return false;
+  
+  if(withIso) {
+    if(!elHLTEmulSelIso(idx, kLooseHT, branch)) return false;
+  }
+
+  return true;
 }
 
 
@@ -520,24 +505,8 @@ bool
 SusyModule::passMllSingleVeto(const Candidate* c1, const Candidate* c2, 
 			      float mllm, float mllM, bool ossf) {
 
-	//long long int _run = 257751;
-	//long long int _lumi = 137;
-    //long long int _evt = 204673540;
-    
-    //long long int _run2 = 258159;
-	//long long int _lumi2 = 170;
-    //long long int _evt2 = 217945982;
-  
-  	//long long int _run3 = 258702;
-	//long long int _lumi3 = 294;
-    //long long int _evt3 = 476582910;
-    
-    
-
   if( (c1->pdgId()== -c2->pdgId()) || !ossf) {
     float mll = Candidate::create(c1,c2)->mass();
-    //if((_vc->get("evt") == _evt && _vc->get("lumi") == _lumi)||(_vc->get("evt") == _evt2 && _vc->get("lumi") == _lumi2)||(_vc->get("evt") == _evt3 && _vc->get("lumi") == _lumi3)){
-        //cout << "invariant mass: " << mll << endl;}
     if(mll>mllm && mll<mllM) return false; 
   }
   return true;
@@ -558,34 +527,34 @@ SusyModule::passMllMultiVeto(const Candidate* c1, const CandList* cands,
 CandList
 SusyModule::findZCand(const CandList* leps, float window, float MTcut) {
     
-    float diff = 99999;
-    int il1_save = -1;
-    int il2_save = -1;
-    CandList clist(2,nullptr);
-    bool zFound = false;
-    for(int il1=0;il1<leps->size()-1;il1++) {
-        for(int il2=il1+1;il2<leps->size();il2++) {
-            if(!(leps->at(il1)->pdgId() == -leps->at(il2)->pdgId())) continue;
-            if(std::abs(91.-Candidate::create(leps->at(il1),leps->at(il2))->mass()) < window && std::abs(91.-Candidate::create(leps->at(il1),leps->at(il2))->mass()) < diff){
-                Candidate* zCand = Candidate::create(leps->at(il1),leps->at(il2));
-                diff = std::abs(91.-(zCand->mass()) );
-                il1_save = il1;
-                il2_save = il2;
-                zFound = true;
-            }
-        }
+  float diff = 99999;
+  size_t il1_save = -1;
+  size_t il2_save = -1;
+  CandList clist(2,nullptr);
+  bool zFound = false;
+  for(size_t il1=0;il1<leps->size()-1;il1++) {
+    for(size_t il2=il1+1;il2<leps->size();il2++) {
+      if(!(leps->at(il1)->pdgId() == -leps->at(il2)->pdgId())) continue;
+      if(std::abs(91.-Candidate::create(leps->at(il1),leps->at(il2))->mass()) < window && std::abs(91.-Candidate::create(leps->at(il1),leps->at(il2))->mass()) < diff){
+	Candidate* zCand = Candidate::create(leps->at(il1),leps->at(il2));
+	diff = std::abs(91.-(zCand->mass()) );
+	il1_save = il1;
+	il2_save = il2;
+	zFound = true;
+      }
     }
-    if(zFound){ 
-        for(int il=0;il<leps->size();il++) {
-            if(il == il1_save || il == il2_save) continue;
-            float mt = KineUtils::M_T(leps->at(il)->pt(), _vc->get("met_pt"), leps->at(il)->phi(), _vc->get("met_phi"));
-            if(mt > MTcut){
-                clist[0] = leps->at(il1_save);
-                clist[1] = leps->at(il2_save);
-            }
-        }
+  }
+  if(zFound){ 
+    for(size_t il=0;il<leps->size();il++) {
+      if(il == il1_save || il == il2_save) continue;
+      float mt = KineUtils::M_T(leps->at(il)->pt(), _vc->get("met_pt"), leps->at(il)->phi(), _vc->get("met_phi"));
+      if(mt > MTcut){
+	clist[0] = leps->at(il1_save);
+	clist[1] = leps->at(il2_save);
+      }
     }
-    return clist;
+  }
+  return clist;
 }
 
 
@@ -981,12 +950,13 @@ SusyModule::cleanLeps(CandList& tightLeps, CandList* vetoLeps) {
 
 
 void
-SusyModule::ptJets(CandList allJets, vector<pair<string, unsigned int> > allJetIdxs,
+SusyModule::ptJets(const CandList* allJets, 
+		   const vector<pair<string, unsigned int> >& allJetIdxs,
                    CandList& jets, vector<pair<string, unsigned int> >& jetIdxs, float thr){
 
-  for(unsigned int i = 0; i < allJets.size(); ++i) {
-    if(allJets[i] -> pt() > thr) {
-      jets   .push_back(allJets   [i]);
+  for(unsigned int i = 0; i < allJets->size(); ++i) {
+    if(allJets->at(i)->pt() > thr) {
+      jets   .push_back(allJets->at(i));
       jetIdxs.push_back(allJetIdxs[i]);
     }
   }
@@ -1026,13 +996,6 @@ SusyModule::cleanJets(CandList* leptons,
       if(_vc->get(jType+ext+"_id",ij)<1) continue;
       if(std::abs(_vc->get(jType+"_eta",ij))>2.4) continue; //introduced in RA7 sync round 3
       
-      // float scale=0.;
-      // if(isJESVar) {
-      // 	scale = _dbm->getDBValue("jes", _vc->get(jType+"_eta", ij), _vc->get(jType+"_pt", ij) );
-      // 	scale = ((SystUtils::kUp==dir)?1:(-1))*scale;
-      // }
-    
-
       Candidate* jet=Candidate::create(_vc->get(jType+ext+"_pt", ij),
 				       _vc->get(jType+ext+"_eta", ij),
 				       _vc->get(jType+ext+"_phi", ij) );
@@ -1045,44 +1008,6 @@ SusyModule::cleanJets(CandList* leptons,
 
   map<Candidate*, std::pair<float,Candidate*> > cmap;
   map<Candidate*, std::pair<float,Candidate*> >::const_iterator it;
-
-/*
-//BEGIN hack to clean all overlapping jets
-  for(unsigned int ij=0;ij<jets.size();ij++) {
-    bool clean = false;
-    for(unsigned int il=0;il<leptons->size();il++) {
-      float dR=leptons->at(il)->dR( jets[ij] );
-      if(dR<0.4){clean=true;}
-
-      }
-    if(clean){continue;}
-    //if(!pass) { 
-    //  lepJetsIdxs.push_back(tmpIdxs[ij]);
-    //  continue;
-    //}
-
-    if(jets[ij]->pt()<bthr) continue;
-    
-    if(jets[ij]->pt()>thr) {
-      cleanJets.push_back(jets[ij] );
-      jetIdxs.push_back(tmpIdxs[ij]);
-    }
-    
-    if(bvals[ij]) continue;
-    
-    cleanBJets.push_back(jets[ij]);
-    bJetIdxs.push_back(tmpIdxs[ij]);
-
-    }
-  
-  
-}
-//END hack
-*/
-
-
-
-
 
   for(unsigned int il=0;il<leptons->size();il++) {
     for(unsigned int ij=0;ij<jets.size();ij++) {
@@ -1149,10 +1074,7 @@ SusyModule::getLHEweight(int LHEsysID){
 
 void
 SusyModule::correctFlipRate(float& rate, float eta){
-
-  if( -2.0 < eta && eta < -1.5) rate *= 3.6;
-  else                          rate *= 1.15;
-
+  rate *= 1.1918;
 }
 
 
@@ -1200,7 +1122,7 @@ void
 SusyModule::applySingleLepSF(const Candidate* cand, float& weight) {
 
   if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
-
+  
   switch(std::abs(cand->pdgId())) {
   case 11: {weight *= _dbm->getDBValue("eleSFDb", std::abs(cand->eta()), cand->pt() ); break;}
   case 13: {weight *= _dbm->getDBValue("muSFDb", std::abs(cand->eta()), cand->pt() ); break;}
@@ -1222,72 +1144,72 @@ SusyModule::getFastSimLepSF(Candidate* lep1, Candidate* lep2, int nVert){
   if(std::abs(lep1 -> pdgId()) == 13) { db2 = "FastSimMuSF"; max2 = 2.39; }
   
   return _dbm -> getDBValue(db1, std::min(lep1->pt(), (float) 199.9), std::min(std::abs(lep1->eta()), max1), std::min(nVert, 39))
-       * _dbm -> getDBValue(db1, std::min(lep2->pt(), (float) 199.9), std::min(std::abs(lep2->eta()), max2), std::min(nVert, 39));
+    * _dbm -> getDBValue(db1, std::min(lep2->pt(), (float) 199.9), std::min(std::abs(lep2->eta()), max2), std::min(nVert, 39));
        
 }
 
 float
 SusyModule::applyLepSfRA7(const CandList& cands){
 
-    if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
-    float sf = 1.;
-    float maxPt = 119.9;
-    float maxEta = 2.39;
-    const Candidate* cand;
-    for(int il=0; il<cands.size();il++){
-        cand = cands[il];
-        int flavor = cand->pdgId();
-        if(std::abs(flavor)==11){
-            sf *= _dbm->getDBValue("FullSimElIDandIP", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-            sf *= _dbm->getDBValue("FullSimElISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-        }
-        else if(std::abs(flavor) == 13){
-            sf *= _dbm->getDBValue("FullSimMuID", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-            sf *= _dbm->getDBValue("FullSimMuIP2D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-            sf *= _dbm->getDBValue("FullSimMuIP3D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-            sf *= _dbm->getDBValue("FullSimMuISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-        }
-        
-        if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;
-            cout << "flavor: " << cand->pdgId() << endl;
-            cout << "pt: " << cand->pt() << endl;
-            cout << "eta: " << cand->eta() << endl;
-            cout << "SF: " << sf << endl;}
+  if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
+  float sf = 1.;
+  float maxPt = 119.9;
+  float maxEta = 2.39;
+  const Candidate* cand;
+  for(size_t il=0; il<cands.size();il++){
+    cand = cands[il];
+    int flavor = cand->pdgId();
+    if(std::abs(flavor)==11){
+      sf *= _dbm->getDBValue("FullSimElIDandIP", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("FullSimElISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
     }
-    return sf;
+    else if(std::abs(flavor) == 13){
+      sf *= _dbm->getDBValue("FullSimMuID", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("FullSimMuIP2D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("FullSimMuIP3D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("FullSimMuISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+    }
+        
+    if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;
+      cout << "flavor: " << cand->pdgId() << endl;
+      cout << "pt: " << cand->pt() << endl;
+      cout << "eta: " << cand->eta() << endl;
+      cout << "SF: " << sf << endl;}
+  }
+  return sf;
 
 }
 
 float 
 SusyModule::applyFastSimLepSfRA7(const CandList& cands, int pileup){
 
-    if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
-    float sf = 1.;
-    float maxPt = 119.9;
-    float maxEta = 2.39;
-    int maxPU = 39;
-    const Candidate* cand;
-    for(int il=0; il<cands.size();il++){
-        cand = cands[il];
-        int flavor = cand->pdgId();
-        if(std::abs(flavor)==11){
-            sf *= _dbm->getDBValue("FastSimElIDandIP", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-            sf *= _dbm->getDBValue("FastSimElISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-        }
-        else if(std::abs(flavor) == 13){
-            sf *= _dbm->getDBValue("FastSimMuID", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-            sf *= _dbm->getDBValue("FastSimMuIP2D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-            sf *= _dbm->getDBValue("FastSimMuIP3D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-            sf *= _dbm->getDBValue("FastSimMuISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
-        }
-        if(sf==0){cout << "Warning! fastSim lepton scale factor is 0, check pt, eta and pile-up for db lookup" << endl;
-            cout << "flavor: " << cand->pdgId() << endl;
-            cout << "pt: " << cand->pt() << endl;
-            cout << "eta: " << cand->eta() << endl;
-            cout << "pileup: " << pileup << endl;
-            cout << "SF: " << sf << endl;}
+  if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
+  float sf = 1.;
+  float maxPt = 119.9;
+  float maxEta = 2.39;
+  int maxPU = 39;
+  const Candidate* cand;
+  for(size_t il=0; il<cands.size();il++){
+    cand = cands[il];
+    int flavor = cand->pdgId();
+    if(std::abs(flavor)==11){
+      sf *= _dbm->getDBValue("FastSimElIDandIP", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
+      sf *= _dbm->getDBValue("FastSimElISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
     }
-    return sf;
+    else if(std::abs(flavor) == 13){
+      sf *= _dbm->getDBValue("FastSimMuID", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
+      sf *= _dbm->getDBValue("FastSimMuIP2D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
+      sf *= _dbm->getDBValue("FastSimMuIP3D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
+      sf *= _dbm->getDBValue("FastSimMuISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta), std::min(pileup, maxPU));
+    }
+    if(sf==0){cout << "Warning! fastSim lepton scale factor is 0, check pt, eta and pile-up for db lookup" << endl;
+      cout << "flavor: " << cand->pdgId() << endl;
+      cout << "pt: " << cand->pt() << endl;
+      cout << "eta: " << cand->eta() << endl;
+      cout << "pileup: " << pileup << endl;
+      cout << "SF: " << sf << endl;}
+  }
+  return sf;
 
 }
 
@@ -1317,28 +1239,28 @@ SusyModule::bTagSF(CandList& jets ,
     }
 
     /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
-        cout << "jet pt : " << _vc->get("Jet_pt", i) << endl;
-        cout << "jet MC flavor : " << _vc->get("Jet_mcFlavour", i) << endl;
-        cout << "flavor: " << flavor << endl;
-        cout << "find: " << find << endl;
-    }*/
+      cout << "jet pt : " << _vc->get("Jet_pt", i) << endl;
+      cout << "jet MC flavor : " << _vc->get("Jet_mcFlavour", i) << endl;
+      cout << "flavor: " << flavor << endl;
+      cout << "find: " << find << endl;
+      }*/
 
 
 
     float fsSF=1.;
     if(fastSim) fsSF=bTagMediumScaleFactorFastSim(jets[i], flavor, fsst);
     // cout<<fsSF<<endl;
-      //fsSF=1;
+    //fsSF=1;
 
     if(find){
       pdata*=bTagMediumEfficiency(jets[i], flavor) * 
 	bTagMediumScaleFactor(jets[i], flavor, st)*fsSF;
       pmc*=bTagMediumEfficiency(jets[i], flavor)*fsSF;
-     /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
+      /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
         cout << "if find" << endl;
         cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
         cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
-    }*/
+	}*/
 
    
     
@@ -1347,11 +1269,11 @@ SusyModule::bTagSF(CandList& jets ,
       pdata*=(1-bTagMediumEfficiency(jets[i], flavor) * 
 	      bTagMediumScaleFactor(jets[i], flavor, st)*fsSF);
       pmc*=(1-bTagMediumEfficiency(jets[i], flavor)*fsSF);
-       /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
+      /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
         cout << "if !find" << endl;
         cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
         cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
-    }*/
+	}*/
 
 
   
@@ -1485,93 +1407,93 @@ SusyModule::GCtriggerScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, f
 
 float 
 SusyModule::GCelectronScaleFactorHighHT(float pt, float eta) {
-   if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.800833;
-   if (pt>=10 && pt<20 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 1.09259;
-   if (pt>=10 && pt<20 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.38004;
-   if (pt>=10 && pt<20 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.06353;
-   if (pt>=10 && pt<20 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 1.01303;
-   if (pt>=20 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.951939;
-   if (pt>=20 && pt<30 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978131;
-   if (pt>=20 && pt<30 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.00001;
-   if (pt>=20 && pt<30 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.944541;
-   if (pt>=20 && pt<30 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.958243;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.974265;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.979292;
-   if (pt>=30 && pt<40 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.978247;
-   if (pt>=30 && pt<40 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.973954;
-   if (pt>=30 && pt<40 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.982194;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.979367;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.984915;
-   if (pt>=40 && pt<50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.989583;
-   if (pt>=40 && pt<50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.00021;
-   if (pt>=40 && pt<50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995648;
-   if (pt>=50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.980086;
-   if (pt>=50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.980024;
-   if (pt>=50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.986589;
-   if (pt>=50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.984587;
-   if (pt>=50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995184;
-   return 0.;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.800833;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 1.09259;
+  if (pt>=10 && pt<20 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.38004;
+  if (pt>=10 && pt<20 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.06353;
+  if (pt>=10 && pt<20 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 1.01303;
+  if (pt>=20 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.951939;
+  if (pt>=20 && pt<30 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978131;
+  if (pt>=20 && pt<30 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.00001;
+  if (pt>=20 && pt<30 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.944541;
+  if (pt>=20 && pt<30 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.958243;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.974265;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.979292;
+  if (pt>=30 && pt<40 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.978247;
+  if (pt>=30 && pt<40 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.973954;
+  if (pt>=30 && pt<40 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.982194;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.979367;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.984915;
+  if (pt>=40 && pt<50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.989583;
+  if (pt>=40 && pt<50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.00021;
+  if (pt>=40 && pt<50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995648;
+  if (pt>=50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.980086;
+  if (pt>=50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.980024;
+  if (pt>=50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.986589;
+  if (pt>=50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.984587;
+  if (pt>=50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995184;
+  return 0.;
 }
 float 
 SusyModule::GCelectronScaleFactorLowHT(float pt, float eta) {
-   if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.81309;
-   if (pt>=10 && pt<20 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 1.09402;
-   if (pt>=10 && pt<20 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.38969;
-   if (pt>=10 && pt<20 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.05715;
-   if (pt>=10 && pt<20 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 1.01151;
-   if (pt>=20 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.952485;
-   if (pt>=20 && pt<30 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978021;
-   if (pt>=20 && pt<30 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.999009;
-   if (pt>=20 && pt<30 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.947156;
-   if (pt>=20 && pt<30 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.957892;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.974451;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978913;
-   if (pt>=30 && pt<40 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.979384;
-   if (pt>=30 && pt<40 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.973866;
-   if (pt>=30 && pt<40 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.981911;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.979478;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.984782;
-   if (pt>=40 && pt<50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.990569;
-   if (pt>=40 && pt<50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.00085;
-   if (pt>=40 && pt<50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.996501;
-   if (pt>=50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.980182;
-   if (pt>=50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.979994;
-   if (pt>=50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.988436;
-   if (pt>=50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.984572;
-   if (pt>=50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995253;
-   return 0.;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.81309;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 1.09402;
+  if (pt>=10 && pt<20 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 1.38969;
+  if (pt>=10 && pt<20 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.05715;
+  if (pt>=10 && pt<20 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 1.01151;
+  if (pt>=20 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.952485;
+  if (pt>=20 && pt<30 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978021;
+  if (pt>=20 && pt<30 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.999009;
+  if (pt>=20 && pt<30 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.947156;
+  if (pt>=20 && pt<30 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.957892;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.974451;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.978913;
+  if (pt>=30 && pt<40 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.979384;
+  if (pt>=30 && pt<40 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.973866;
+  if (pt>=30 && pt<40 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.981911;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.979478;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.984782;
+  if (pt>=40 && pt<50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.990569;
+  if (pt>=40 && pt<50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 1.00085;
+  if (pt>=40 && pt<50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.996501;
+  if (pt>=50 && std::abs(eta)>=0 && std::abs(eta)<0.8 ) return 0.980182;
+  if (pt>=50 && std::abs(eta)>=0.8 && std::abs(eta)<1.442 ) return 0.979994;
+  if (pt>=50 && std::abs(eta)>=1.442 && std::abs(eta)<1.566 ) return 0.988436;
+  if (pt>=50 && std::abs(eta)>=1.566 && std::abs(eta)<2 ) return 0.984572;
+  if (pt>=50 && std::abs(eta)>=2 && std::abs(eta)<2.5 ) return 0.995253;
+  return 0.;
 }
 float 
 SusyModule::GCmuonScaleFactor(float pt, float eta) {
-   if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.950673;
-   if (pt>=10 && pt<20 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.959971;
-   if (pt>=10 && pt<20 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.96344;
-   if (pt>=10 && pt<20 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.97954;
-   if (pt>=20 && pt<25 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.968778;
-   if (pt>=20 && pt<25 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.985696;
-   if (pt>=20 && pt<25 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.986646;
-   if (pt>=20 && pt<25 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.961432;
-   if (pt>=25 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.986112;
-   if (pt>=25 && pt<30 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.982328;
-   if (pt>=25 && pt<30 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.981606;
-   if (pt>=25 && pt<30 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.964637;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.989584;
-   if (pt>=30 && pt<40 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.990363;
-   if (pt>=30 && pt<40 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.989629;
-   if (pt>=30 && pt<40 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.954459;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.990997;
-   if (pt>=40 && pt<50 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.990606;
-   if (pt>=40 && pt<50 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.991023;
-   if (pt>=40 && pt<50 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.951617;
-   if (pt>=50 && pt<60 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.987545;
-   if (pt>=50 && pt<60 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.989335;
-   if (pt>=50 && pt<60 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.99151;
-   if (pt>=50 && pt<60 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.94982;
-   if (pt>=60 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.992751;
-   if (pt>=60 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.9878;
-   if (pt>=60 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.988131;
-   if (pt>=60 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.958638;
-   return 0.;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.950673;
+  if (pt>=10 && pt<20 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.959971;
+  if (pt>=10 && pt<20 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.96344;
+  if (pt>=10 && pt<20 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.97954;
+  if (pt>=20 && pt<25 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.968778;
+  if (pt>=20 && pt<25 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.985696;
+  if (pt>=20 && pt<25 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.986646;
+  if (pt>=20 && pt<25 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.961432;
+  if (pt>=25 && pt<30 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.986112;
+  if (pt>=25 && pt<30 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.982328;
+  if (pt>=25 && pt<30 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.981606;
+  if (pt>=25 && pt<30 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.964637;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.989584;
+  if (pt>=30 && pt<40 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.990363;
+  if (pt>=30 && pt<40 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.989629;
+  if (pt>=30 && pt<40 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.954459;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.990997;
+  if (pt>=40 && pt<50 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.990606;
+  if (pt>=40 && pt<50 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.991023;
+  if (pt>=40 && pt<50 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.951617;
+  if (pt>=50 && pt<60 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.987545;
+  if (pt>=50 && pt<60 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.989335;
+  if (pt>=50 && pt<60 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.99151;
+  if (pt>=50 && pt<60 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.94982;
+  if (pt>=60 && std::abs(eta)>=0 && std::abs(eta)<0.9 ) return 0.992751;
+  if (pt>=60 && std::abs(eta)>=0.9 && std::abs(eta)<1.2 ) return 0.9878;
+  if (pt>=60 && std::abs(eta)>=1.2 && std::abs(eta)<2.1 ) return 0.988131;
+  if (pt>=60 && std::abs(eta)>=2.1 && std::abs(eta)<2.4 ) return 0.958638;
+  return 0.;
 }
 
 float 
@@ -1587,8 +1509,8 @@ SusyModule::GCleptonScaleFactor(int pdgId, float pt, float eta, float ht) {
 float 
 SusyModule::GCeventScaleFactor(int pdgId1, int pdgId2, float pt1, float pt2, float eta1, float eta2, float ht) {
   return GCtriggerScaleFactor(pdgId1, pdgId2, pt1, pt2, ht) * 
-         GCleptonScaleFactor (pdgId1, pt1, eta1, ht) * 
-         GCleptonScaleFactor(pdgId2, pt2, eta2, ht);
+    GCleptonScaleFactor (pdgId1, pt1, eta1, ht) * 
+    GCleptonScaleFactor(pdgId2, pt2, eta2, ht);
 }
 
 
@@ -2421,40 +2343,40 @@ SusyModule::getVarWeightFastSimLepSF(const Candidate* l1,
 float
 SusyModule::getVarWeightFastSimLepSFRA7(const CandList& cands, int dir) {
 
-    float totUnc = 1.;
-    for(int il = 0;il<cands.size();il++){
-        const Candidate* cand = cands[il];
-        float unc = 1.;
-        if(std::abs(cand->pdgId())==11) {
-            if(cand->pt()<20) unc+=0.10*dir;
-            else if(cand->pt()<30) unc+=0.08*dir;
-            else unc+=0.05*dir;
-        }
-        if(std::abs(cand->pdgId())==13) {
-            if(cand->pt()<20) unc+=0.03*dir;
-            else if(cand->pt()<30) unc+=0.01*dir;
-            else unc+=0.01*dir;
-        }
-        totUnc *= unc;
+  float totUnc = 1.;
+  for(size_t il = 0;il<cands.size();il++){
+    const Candidate* cand = cands[il];
+    float unc = 1.;
+    if(std::abs(cand->pdgId())==11) {
+      if(cand->pt()<20) unc+=0.10*dir;
+      else if(cand->pt()<30) unc+=0.08*dir;
+      else unc+=0.05*dir;
     }
-    return totUnc;
+    if(std::abs(cand->pdgId())==13) {
+      if(cand->pt()<20) unc+=0.03*dir;
+      else if(cand->pt()<30) unc+=0.01*dir;
+      else unc+=0.01*dir;
+    }
+    totUnc *= unc;
+  }
+  return totUnc;
 }
 
 float
 SusyModule::getWeightFastSimHltSFRA7(const CandList& cands, float HT) {
 
-    int nEl = 0;
-    bool lowPtEl = false;
-    for(int il = 0;il<cands.size();il++){
-        const Candidate* cand = cands[il];
-        if(std::abs(cand->pdgId())==11){
-            nEl +=1;
-            if(cand->pt()<15. && HT < 400) lowPtEl = true;
-        }
+  int nEl = 0;
+  bool lowPtEl = false;
+  for(size_t il = 0;il<cands.size();il++){
+    const Candidate* cand = cands[il];
+    if(std::abs(cand->pdgId())==11){
+      nEl +=1;
+      if(cand->pt()<15. && HT < 400) lowPtEl = true;
     }
-    if(nEl>=3) return 0.97;
-    else if(lowPtEl) return 0.93;
-    else return 1.;
+  }
+  if(nEl>=3) return 0.97;
+  else if(lowPtEl) return 0.93;
+  else return 1.;
 
 }
 
@@ -2462,18 +2384,18 @@ SusyModule::getWeightFastSimHltSFRA7(const CandList& cands, float HT) {
 float
 SusyModule::getVarWeightFastSimHltSFRA7(const CandList& cands, float HT, int dir) {
 
-    int nEl = 0;
-    bool lowPtEl = false;
-    for(int il = 0;il<cands.size();il++){
-        const Candidate* cand = cands[il];
-        if(std::abs(cand->pdgId())==11){
-            nEl +=1;
-            if(cand->pt()<15. && HT < 400) lowPtEl = true;
-        }
+  int nEl = 0;
+  bool lowPtEl = false;
+  for(size_t il = 0;il<cands.size();il++){
+    const Candidate* cand = cands[il];
+    if(std::abs(cand->pdgId())==11){
+      nEl +=1;
+      if(cand->pt()<15. && HT < 400) lowPtEl = true;
     }
-    if(nEl>=3) return 1+dir*0.05;
-    else if(lowPtEl) return 1+dir*0.05;
-    else return 1+dir*0.03;
+  }
+  if(nEl>=3) return 1+dir*0.05;
+  else if(lowPtEl) return 1+dir*0.05;
+  else return 1+dir*0.03;
 
 }
 
@@ -2563,11 +2485,6 @@ SusyModule::applyISRWeight(unsigned int process, int var, float& weight) {
 
   Candidate* cand=Candidate::create(collection[0],collection[1]);
 
-  // Candidate* cand=collection[0];
-  // for(unsigned int i=1;i<collection.size(); ++i)
-  //   //pt += collection[i] -> pt();
-  //   cand = Candidate::create(collection[i],cand);
-
   float pt=cand->pt();
   isrWeight(var, pt, weight);
 
@@ -2590,10 +2507,6 @@ SusyModule::isrWeight(int var, float pt, float& weight){
     else if(pt > 400) weight *= 1.15;
   }
 
-  // central value
-  // else {
-  // }
-
 }
 
 
@@ -2601,11 +2514,8 @@ CandList
 SusyModule::collectGenParticles(int pdgId, int status){
 
   CandList list;
-  //cout<<_vc->get("nGenPart")<<endl;
   for(unsigned int i = 0; i < _vc->get("nGenPart"); ++i){
-    //    cout<<(int)_vc->get("GenPart_pdgId")<<"   "<<pdgId<<"   "<<(std::abs(_vc->get("GenPart_pdgId")) == pdgId)<<"   "<<_vc->get("GenPart_pt"    , i)<<"   "<<_vc->get("GenPart_eta"    , i)<<"  "<<_vc->get("GenPart_status")<<endl;
-    if(std::abs(_vc->get("GenPart_pdgId",i)) == pdgId)// &&
-       //_vc->get("GenPart_status",i) == status)
+    if(std::abs(_vc->get("GenPart_pdgId",i)) == pdgId)
       list.push_back(Candidate::create(_vc->get("GenPart_pt"    , i), 
                                        _vc->get("GenPart_eta"   , i),
                                        _vc->get("GenPart_phi"   , i),
@@ -2619,36 +2529,48 @@ SusyModule::collectGenParticles(int pdgId, int status){
 
 
 //Veto event if any central jet (|eta|<2.5 && pT>20 GeV) is unmatched (DeltaR<0.3) a to GenJet and has charged hadron fraction<0.1 
-// bool
-// SusyModule::getISRweight(bool isJESVar, int dir, const CandList& leptons) {
+bool
+SusyModule::vetoFSBadJetEvent(bool isJESVar, int dir, const CandList& leptons) {
 
-//    vector<string> jetTypes({"Jet","DiscJet"});
+  vector<string> jetTypes({"Jet","DiscJet"});
 
-//    for(size_t it=0;it<jetTypes.size();it++) {
-//     string jType=jetTypes[it];
+  for(size_t it=0;it<jetTypes.size();it++) {
+    string jType=jetTypes[it];
 
-//     string ext="";
-//     if(isJESVar) {
-//       ext=((SystUtils::kUp==dir)?"_jecUp":"_jecDown");
-//     }
+    string ext="";
+    if(isJESVar) {
+      ext=((SystUtils::kUp==dir)?"_jecUp":"_jecDown");
+    }
+    for(size_t ij=0;ij<_vc->get("n"+jType+ext);ij++) {
+      Candidate* jet=Candidate::create(_vc->get(jType+ext+"_pt", ij),
+				       _vc->get(jType+ext+"_eta", ij),
+				       _vc->get(jType+ext+"_phi", ij) );
 
-//     Candidate* jet=Candidate::create(_vc->get(jType+ext+"_pt", ij),
-// 				     _vc->get(jType+ext+"_eta", ij),
-// 				     _vc->get(jType+ext+"_phi", ij) );
+      if(_vc->get(jType+ext+"_pt", ij)<20 ||
+	 std::abs(_vc->get(jType+ext+"_eta", ij))>=2.5 ) continue;
 
+      bool isLep=false;
+      for(size_t il=0;il<leptons.size();il++) {
+	if(leptons[il]->dR(jet)<0.4) isLep=true;
+      }
+      if(isLep) continue;
+
+      float mcPt=_vc->get(jType+ext+"_mcPt", ij);
     
-//     float mcPt=_vc->get(jType+ext+"_mcPt", ij);
+      if(mcPt!=0 && _vc->get(jType+ext+"_chHEF")<0.1 )
+	return false;
+    }
+  }
     
-//     if(mcPt!=0 && _vc->get(jType+ext+"_") )
-//       return false;
-//    }
-// }
+  return true;
+}
 
 
 //Define NISR-jets≡Define NISR-jets≡ number of jet not matched (∆R<0.3) to MC truth particles descending from top, W, Z, H, or SUSY decay
 void
 SusyModule::applyISRJetWeight(const vector<pair<string, unsigned int> >& jetIdxs,
-			      int var, const string& signame, float& weight ) {
+			      int var, const string& signame, bool isRA5,
+			      float& weight ) {
 
   int nJet=0;
   size_t p=signame.find("_mG");
@@ -2669,11 +2591,12 @@ SusyModule::applyISRJetWeight(const vector<pair<string, unsigned int> >& jetIdxs
 
   if(nJet>6) nJet=6;
   if(var==0)
-    weight*=_dbm->getDBValue(sigtag+"ISR",signame);
+    weight*=_dbm->getDBValue(sigtag+(isRA5?("ISR_RA5"):("ISR")),signame);
   else if(var==1)
-    weight*=_dbm->getDBErrH(sigtag+"ISR",signame);
+    weight*=_dbm->getDBErrH(sigtag+(isRA5?("ISR_RA5"):("ISR")),signame);
   else if(var==-1)
-    weight*=_dbm->getDBErrL(sigtag+"ISR",signame);
+    weight*=_dbm->getDBErrL(sigtag+(isRA5?("ISR_RA5"):("ISR")),signame);
+
   
   switch(nJet) {
   case(1) : {weight*=0.882*(1+var*0.5);break;}
@@ -2683,5 +2606,48 @@ SusyModule::applyISRJetWeight(const vector<pair<string, unsigned int> >& jetIdxs
   case(5) : {weight*=0.601*(1+var*0.5);break;}
   case(6) : {weight*=0.515*(1+var*0.5);break;}
   }
+
+}
+
+void
+SusyModule::applyHLTWeight(float pt1, float eta1, int pdgId1,
+			 float pt2, float eta2, int pdgId2, 
+			   float ht, float& weight, int var) {
+  weight *= _hltEff->getEfficiency(pt1, eta1, pdgId1,
+				   pt2, eta2, pdgId2, 
+				   ht, var);
+
+}
+
+
+void
+SusyModule::applyHLTWeightRA7(float pt1, float eta1, int pdgId1,
+			      float pt2, float eta2, int pdgId2, 
+			      float pt3, float eta3, int pdgId3, 
+			      float ht, float& weight, int var) {
+  weight *= _hltEff->getEfficiencyRA7(pt1, eta1, pdgId1,
+				      pt2, eta2, pdgId2, 
+				      pt3, eta3, pdgId3, 
+				      ht, var);
+}
+
+
+float
+SusyModule::getFSMETWeight(int wf, const string& sname, const string& sp,
+			   bool isRA5, int var ) {
+
+  string dbname="FSMET"+(string)(isRA5?"_RA5":"_RA7");
+  if(!_dbm->exists(dbname) ) {
+    _dbm->loadDb(dbname,"db2016/"+sp+"MET/"+sname+".db");
+  }
+  
+  if(var==0)
+    return _dbm->getDBValue(dbname,wf);
+  else if(var==1)
+    return _dbm->getDBErrH(dbname,wf);
+  else if(var==-1)
+    return _dbm->getDBErrL(dbname,wf);
+  else
+    return 1;
 
 }
