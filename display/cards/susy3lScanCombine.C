@@ -5,8 +5,8 @@ void susy3l_scanSigBENCH(){
 
     //general parameters ********************* general parameters
     //string sig="fs_t1ttttBENCH";
-    string sig="fs_t5qqqqvvBENCH";
-    bool allSR = true;
+    string sig="fs_t1ttttBENCH";
+    bool allSR = false;
 
     string dir="SUSY3L";
     string fileName="merged_4fb";

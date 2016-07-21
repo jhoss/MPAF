@@ -218,7 +218,7 @@ for lim in limits:
     
 print "smoothing..."
 for lim in limits:
-    nSmooth = 3# if model!="T1tttt" else 3  # more aggresive smoothing for t1tttt since it's full of holes
+    nSmooth = 5# if model!="T1tttt" else 3  # more aggresive smoothing for t1tttt since it's full of holes
     graphs1[lim] = extractSmoothedContour(h_lims_mu[lim], nSmooth)
     graphs1[lim].SetName( graphs1[lim].GetName().replace("_mu","") ) 
     graphs1[lim].Write()
