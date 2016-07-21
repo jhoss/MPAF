@@ -411,18 +411,18 @@ void SUSY3L::initialize(){
 
     //systematic uncertainties
     if(_runSystematics){
-        if(false){
+      if(true){
         addManualSystSource("btag",SystUtils::kNone);
         addManualSystSource("jes",SystUtils::kNone);
         addManualSystSource("fakes_EWK",SystUtils::kNone);
-        addManualSystSource("pu",SystUtils::kNone);
+        //addManualSystSource("pu",SystUtils::kNone);   //TODO: enable after pu uncertainty is available
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
-   //     addManualSystSource("fs_lep",SystUtils::kNone);
-   //     addManualSystSource("fs_hlt",SystUtils::kNone);
+        //addManualSystSource("fs_lep",SystUtils::kNone);
+        //addManualSystSource("fs_hlt",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
-	addManualSystSource("met_fast",SystUtils::kNone);
+	    addManualSystSource("met_fast",SystUtils::kNone);
     
         //uncertainties previously taken care of in display card 
         addManualSystSource("lumi",SystUtils::kNone);
@@ -491,8 +491,8 @@ void SUSY3L::modifyWeight() {
             string db="puWeights";
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kUp==getUncDir() ){db="puWeightsUp";}
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kDown==getUncDir() ){db="puWeightsDown";}
-	        _weight *= _dbm->getDBValue(db, _vc->get("nTrueInt") ); 
-            //_weight *= _susyMod->getPuWeight( _vc->get("nVert") );
+	        //_weight *= _dbm->getDBValue(db, _vc->get("nTrueInt") ); 
+            _weight *= _susyMod->getPuWeight( _vc->get("nVert") ); //TODO: roll back to function above
         }
         if(!_closure && _version == 4){
             string db="puWeights74X";
@@ -521,8 +521,8 @@ void SUSY3L::run(){
 
     //skim tree
     if(_skim) {
-      if(_vc->get("nLepGood") >2) fillSkimTree();
-      return; 
+        if(_vc->get("nLepGood") >2) fillSkimTree();
+        return; 
     }
     
     //increment event counter, used as denominator for yield calculation
@@ -589,7 +589,7 @@ void SUSY3L::run(){
     }
     
     //lepton scale factors
-    if(!_vc->get("isData")){
+    if(!_vc->get("isData") && !_closure ){
         //fullSim scale factors, flat uncertainty added in syst() function
 	    _weight*=_susyMod->applyLepSfRA7(_tightLepsPtCutMllCut);
         //fastSim scale factors on top of full sim SF
@@ -1691,16 +1691,16 @@ void SUSY3L::advancedSelection(int WF){
         int wf = getCurrentWorkflow();
         int offset = 0;
 
-	if(_fastSim && wf <kOnZSR001_Fake) { //MET fastsim ucnertainties
-	  if(!isInUncProc())
-	    _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
-	  else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kUp )
-	    _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 1 );
-	  else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kDown )
-	    _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, -1 );
-	  else
-	    _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
-	}
+	    if(_fastSim && wf <kOnZSR001_Fake) { //MET fastsim ucnertainties
+	        if(!isInUncProc()) 
+                _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
+	        else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kUp )
+	            _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 1 );
+	        else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kDown )
+	            _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, -1 );
+	        else
+	            _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
+	    }
 
         if(!_isFake){
             if(_isOnZ){setWorkflow(kOnZBaseline);}

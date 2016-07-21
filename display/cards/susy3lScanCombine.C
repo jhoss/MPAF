@@ -124,6 +124,7 @@ void susy3l_scanSigBENCH(){
 	//md.addNuisanceParameter("fs_hlt"            ,sig                                    ,"shape","");
     md.addNuisanceParameter("isr"               ,sig                                    ,"shape","");
 	md.addNuisanceParameter("scale"             ,sig                                    ,"shape","");
+	md.addNuisanceParameter("met_fast"          ,sig                                    ,"shape","");
 
 
     //flat uncertanties
