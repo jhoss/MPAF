@@ -83,7 +83,7 @@ void SUSY3L::initialize(){
     
     //register HLT trigger bit tree variables 
     registerTriggerVars();
-    
+
     //event characteristics
     _vc->registerVar("run"                             );    //run number
     _vc->registerVar("lumi"                            );    //lumi section number
@@ -243,10 +243,10 @@ void SUSY3L::initialize(){
     //_vc->registerVar("nLHEweight"                      );
     //_vc->registerVar("LHEweight_id"                    );
     //_vc->registerVar("LHEweight_wgt"                   );
-
+    
     //SusyModule for common inputs and functions with RA5
     _susyMod = new SusyModule(_vc, _dbm);
-
+ 
     //categories
     int nCateg=77;
     _categs.resize(nCateg);
@@ -363,15 +363,6 @@ void SUSY3L::initialize(){
 
 
     //load lepton scale factors
-    _dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
-    _dbm->loadDb("eleIdSFIsoDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
-    _dbm->loadDb("eleIsoSFIsoDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
-    _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
-    //_dbm->loadDb("muIsoSFDb","db2016/electronScaleFactors.root","");
-    _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
-    _dbm->loadDb("muSIPSFDb","db2016/TnP_MuonID_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root" ,"pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass"); 
-    
-    
     //fullSim muons
     //_dbm->loadDb("FullSimMuID", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass" );
     //_dbm->loadDb("FullSimMuIP2D", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_TightIP2D_DENOM_LooseID_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass" );
@@ -390,12 +381,21 @@ void SUSY3L::initialize(){
     //_dbm->loadDb("FastSimElISO", "lepSF_RA7/fastSim/electrons/sf_el_multi.root", "histo3D" );
    
     //fullsim lepton SF
-    // _dbm->loadDb("eleIdSFDb","db2016/electronScaleFactors.root","");
-    // _dbm->loadDb("muIdSFDb","db2016/electronScaleFactors.root","");
-    // _dbm->loadDb("eleIsoSFDb","db2016/electronScaleFactors.root","");
-    // _dbm->loadDb("muIsoSFDb","db2016/electronScaleFactors.root","");
-
+    //electrons
+    _dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
+    _dbm->loadDb("eleIdSFIsoDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
+    _dbm->loadDb("eleIsoSFIsoDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
+    //muons
+    _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
+    _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
+    _dbm->loadDb("muSIPSFDb","db2016/TnP_MuonID_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root" ,"pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
+    //_dbm->loadDb("muIsoSFDb","db2016/TODO: add name here","");
     
+    //fastSim TODO: to be added
+    //electrons
+    //muons
+
+
     //load pile-up weights 80X
     _dbm->loadDb("puWeights","db2016/puWeights_4fb.root","puw");
     _dbm->loadDb("puWeightsUp","db2016/puWeights_4fb_Up.root","puw");
@@ -422,7 +422,7 @@ void SUSY3L::initialize(){
    //     addManualSystSource("fs_hlt",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
-	    addManualSystSource("met_fast",SystUtils::kNone);
+	addManualSystSource("met_fast",SystUtils::kNone);
     
         //uncertainties previously taken care of in display card 
         addManualSystSource("lumi",SystUtils::kNone);
@@ -454,7 +454,7 @@ void SUSY3L::initialize(){
     //JSON file
     string json=string(getenv ("MPAF"))+"/workdir/database/db2016/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt";
     _jsonUtils=new JSONUtils(json);
-    cout<<" init done "<<endl;
+
 }
 
 
@@ -528,13 +528,13 @@ void SUSY3L::run(){
     //increment event counter, used as denominator for yield calculation
     counter("denominator");
 
-    //fastsim cleansing
+    //fastsim cleaning
     if(_fastSim) {
         if( !_susyMod->vetoFSBadJetEvent(getUncName()=="jes", getUncDir(), _looseLeps)) return;
     }
 
     if(_fastSim && !checkMassBenchmark()) return;
-    
+
     //check what kind of MC sample is used
     checkSample();
 
@@ -588,24 +588,22 @@ void SUSY3L::run(){
         }
     }
     
-/*    //lepton scale factors
+    //lepton scale factors
     if(!_vc->get("isData")){
-        //fullSim and fast sim scale factors, flat uncertainty added in syst() function
-	    _weight*=_susyMod->applyLepSfRA7(_candList);
+        //fullSim scale factors, flat uncertainty added in syst() function
+	    _weight*=_susyMod->applyLepSfRA7(_tightLepsPtCutMllCut);
         //fastSim scale factors on top of full sim SF
-        if(_fastSim){
-            //TODO add when available
-            _weight *= 1;
-            //_weight*=_susyMod->applyFastSimLepSfRA7(_candList _vc->get("nTrueInt"),0);
-            //uncertainties
-            //if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
-            //    _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_candList, _vc->get("nTrueInt"), 1);
-            //if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
-            //    _weight *= _susyMod->getVarWeightFastSimLepSFRA7(, -1);
-        }
+        //TODO: add when available
+        //if(_fastSim) {
+        //    _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut, _vc->get("nTrueInt"));
+        //    // //uncertainties
+	    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
+	    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, 1);
+	    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
+	    //      _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, -1);
+        //}
     } 
     counter("lepton SF");
-*/
     
     //HLT efficiency correction
     if(!_vc->get("isData") && !_closure ) {

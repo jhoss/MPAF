@@ -18,7 +18,6 @@ SusyModule::SusyModule(VarClass* vc, DataBaseManager* dbm):
   initPUWeights();
 
   string name=(string)(getenv("MPAF")) + "/workdir/database/db2016/HLT_Efficiencies_4fb_2016.root";
-  std::cout<<" ============================================== >> "<<name<<std::endl;
   _hltEff= new HLTEfficiency(name);
 }
 
@@ -1160,14 +1159,15 @@ SusyModule::applyLepSfRA7(const CandList& cands){
     cand = cands[il];
     int flavor = cand->pdgId();
     if(std::abs(flavor)==11){
-      sf *= _dbm->getDBValue("FullSimElIDandIP", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("FullSimElISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("eleIsoSFNonDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("eleIdSFIsoDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("eleIsoSFNonDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
     }
     else if(std::abs(flavor) == 13){
-      sf *= _dbm->getDBValue("FullSimMuID", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("FullSimMuIP2D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("FullSimMuIP3D", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("FullSimMuISO", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("muIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("muDxyzSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("muSIPSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      //TODO: uncomment when ISO SF avaibale sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
     }
         
     if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;
@@ -2636,18 +2636,51 @@ float
 SusyModule::getFSMETWeight(int wf, const string& sname, const string& sp,
 			   bool isRA5, int var ) {
 
-  string dbname="FSMET"+(string)(isRA5?"_RA5":"_RA7");
-  if(!_dbm->exists(dbname) ) {
-    _dbm->loadDb(dbname,"db2016/"+sp+"MET/"+sname+".db");
+  if(!_dbm->exists("FSMET") ) {
+    _dbm->loadDb("FSMET","db2016/"+sp+"MET/"+sname+(string)(isRA5?"_RA5":"_RA7")+".db");
   }
   
   if(var==0)
-    return _dbm->getDBValue(dbname,wf);
+    return _dbm->getDBValue("FSMET",wf);
   else if(var==1)
-    return _dbm->getDBErrH(dbname,wf);
+    return _dbm->getDBErrH("FSMET",wf);
   else if(var==-1)
-    return _dbm->getDBErrL(dbname,wf);
+    return _dbm->getDBErrL("FSMET",wf);
+
   else
     return 1;
 
+}
+
+void
+SusyModule::applyLeptonSF(float pt, float eta, float pdgId, bool isEmuIso, float& weight, int var) {
+
+  if(std::abs(pdgId)==11) {
+    weight *= getSingleSF("eleIdSFIsoDb", pt, std::abs(eta), var);
+     if(isEmuIso)
+       weight *= getSingleSF("eleIsoSFIsoDb", pt, std::abs(eta), var);
+     else
+       weight *= getSingleSF("eleIsoSFNonDb", pt, std::abs(eta), var);
+     
+
+  } else if(std::abs(pdgId)==11) {
+    weight *= getSingleSF("muIdSFDb", pt, std::abs(eta), var);
+    //weight *= getSingleSF("muIsoSFDb", pt, std::abs(eta), var); //not yet available
+    weight *= getSingleSF("muDxyzSFDb", pt, std::abs(eta), var);
+    weight *= getSingleSF("muSIPSFDb", pt, std::abs(eta), var);
+  }
+
+
+}
+
+float
+SusyModule::getSingleSF(const string& db, float v1, float v2, int var) {
+  if(var==0)
+    return _dbm->getDBValue(db,v1,v2);
+  else if(var==1)
+    return _dbm->getDBErrH(db,v1,v2);
+  else if(var==-1)
+    return _dbm->getDBErrL(db,v1,v2);
+  else
+    return 1;
 }

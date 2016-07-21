@@ -160,13 +160,16 @@ public:
   void applyHLTWeightRA7(float pt1, float eta1, int pdgId1,
 			 float pt2, float eta2, int pdgId2, 
 			 float pt3, float eta3, int pdgId3, 
-			 float ht, float& weight, int var);
+			 float ht, float& weight, int var=0);
 
   bool vetoFSBadJetEvent(bool isJESVar, int dir, const CandList& leptons);
   
   float getFSMETWeight(int wf, const string& sname, const string& sp,
 		       bool isRA5, int var );
 
+  void applyLeptonSF(float pt, float eta, float pdgId, 
+		     bool isEmuIso, float& weight, int var=0);
+  float getSingleSF(const string& db, float v1, float v2, int var);
 
   enum {kDenom=0,
 	kVLoose,
