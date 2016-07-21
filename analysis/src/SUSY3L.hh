@@ -190,6 +190,7 @@ private:
     //vectors for electron, muon, and tau candidates
     std::vector<int> _tauIdx;
     std::vector<unsigned int> _lepsIdx;
+    std::vector<unsigned int> _candListIdx;
     std::vector<unsigned int> _lepCandIdx;
     std::vector<unsigned int> _looseLepsIdx;
     std::vector<unsigned int> _looseLepsPtCutIdx;
@@ -235,6 +236,7 @@ private:
     CandList _tightLepsPtCut;
     CandList _tightLepsPtCutMllCut;
     CandList _lepJets;
+    CandList _candList;
 
     Candidate* _met;
     Candidate* _Z;

@@ -578,7 +578,7 @@ void SUSY3L::run(){
 	        _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, false, _weight );
         }
     }
-/*    
+   /* 
     //lepton scale factors
     if(!_vc->get("isData")){
         //fullSim scale factors, flat uncertainty added in display card
@@ -623,8 +623,8 @@ void SUSY3L::run(){
     }
     counter("HLT SF");
 
-
     //end event reweighting
+
   
     setWorkflow(kGlobal);	
 
@@ -879,6 +879,9 @@ bool SUSY3L::collectKinematicObjects(){
 
     _leps.clear();
     _lepsIdx.clear();
+    
+    _candList.clear();
+    _candListIdx.clear();
 
     _lepCand.clear();
     _lepCandIdx.clear();
@@ -1031,6 +1034,10 @@ bool SUSY3L::collectKinematicObjects(){
         _l1Cand = _tightLepsPtCutMllCut[0]; _l1CandIdx = _tightLepsPtCutMllCutIdx[0];
         _l2Cand = _tightLepsPtCutMllCut[1]; _l2CandIdx = _tightLepsPtCutMllCutIdx[1];
         _l3Cand = _tightLepsPtCutMllCut[2]; _l3CandIdx = _tightLepsPtCutMllCutIdx[2];
+        for(size_t i=0;i<_tightLepsPtCutMllCut.size();i++){
+            _candList.push_back(_tightLepsPtCutMllCut[i]);
+            _candListIdx.push_back(_tightLepsPtCutMllCutIdx[i]);
+        }
    }
    else if(_tightLepsPtCutMllCut.size()+_fakableNotTightLepsPtCut.size()>2){
         //merge candidate lists
@@ -1045,6 +1052,8 @@ bool SUSY3L::collectKinematicObjects(){
         _l1Cand = _lepCand[0]; _l1CandIdx = _lepCandIdx[0];
         _l2Cand = _lepCand[1]; _l2CandIdx = _lepCandIdx[1];
         _l3Cand = _lepCand[2]; _l3CandIdx = _lepCandIdx[2];
+        _candList = _lepCand;
+        _candListIdx = _lepCandIdx; 
     }
     else{return false;}
  
@@ -2702,7 +2711,7 @@ void SUSY3L::sortCand(CandList leps, std::vector<unsigned int> lepsIdx){
             lepsIdx_tmp.push_back(lepsIdx[il]);
         }
         _lepCand.clear();
-        _lepCand.clear();
+        _lepCandIdx.clear();
 
         while(leps_tmp.size()>0){
             float pt = -1;
@@ -3063,9 +3072,6 @@ void SUSY3L::systUnc(){
         //lumi
         if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lumiUnc;}
 	    if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kDown == getUncDir() ){_weight *= 1-lumiUnc;}
-	    //HLT
-        //if((isInUncProc() &&  getUncName()=="HLTEff") && SystUtils::kUp   == getUncDir() ){_weight *= 1+hltUnc;}
-	    //if((isInUncProc() &&  getUncName()=="HLTEff") && SystUtils::kDown == getUncDir() ){_weight *= 1-hltUnc;}
 	    //lepton efficiency
         if((isInUncProc() &&  getUncName()=="LepEff") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lepUnc;}
 	    if((isInUncProc() &&  getUncName()=="LepEff") && SystUtils::kDown == getUncDir() ){_weight *= 1-lepUnc;}
