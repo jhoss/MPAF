@@ -32,7 +32,7 @@ private:
     void modifyWeight();
     void writeOutput();
     void modifySkimming();
-    void collectKinematicObjects();
+    bool collectKinematicObjects();
     
     bool tauSelection(int);
     bool looseLepton(const Candidate* c, int idx, int pdgId);
@@ -150,6 +150,7 @@ private:
     enum {kIsSingleFake=0,kIsDoubleFake,kIsTripleFake };
     
     SusyModule* _susyMod;
+    JSONUtils* _jsonUtils;
 
     //cut variables
     float _valCutLepMultiplicityBR;
@@ -289,7 +290,10 @@ private:
 
   	//scan
   	TH3D* _hScanWeight;
+        TH2D* _hScanWeight2D;
   	int _nProcEvtScan;
+
+ 
 
 };
 
