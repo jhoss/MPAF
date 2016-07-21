@@ -363,6 +363,15 @@ void SUSY3L::initialize(){
 
 
     //load lepton scale factors
+    _dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
+    _dbm->loadDb("eleIdSFIsoDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
+    _dbm->loadDb("eleIsoSFIsoDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
+    _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
+    //_dbm->loadDb("muIsoSFDb","db2016/electronScaleFactors.root","");
+    _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
+    _dbm->loadDb("muSIPSFDb","db2016/TnP_MuonID_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root" ,"pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass"); 
+    
+    
     //fullSim muons
     //_dbm->loadDb("FullSimMuID", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass" );
     //_dbm->loadDb("FullSimMuIP2D", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_TightIP2D_DENOM_LooseID_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass" );
@@ -578,21 +587,21 @@ void SUSY3L::run(){
 	        _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, false, _weight );
         }
     }
-   /* 
-    //lepton scale factors
+    
+/*    //lepton scale factors
     if(!_vc->get("isData")){
-        //fullSim scale factors, flat uncertainty added in display card
-        if(!_fastSim) {
-	        _weight*=_susyMod->applyLepSfRA7(_tightLepsPtCutMllCut);
-        }
-        //fastSim scale factors and flavor and pt dependent shape uncertainty
-        else{
-            _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut, _vc->get("nTrueInt"));
-            // //uncertainties
-	        if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
-	            _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, 1);
-	        if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
-	          _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, -1);
+        //fullSim and fast sim scale factors, flat uncertainty added in syst() function
+	    _weight*=_susyMod->applyLepSfRA7(_candList);
+        //fastSim scale factors on top of full sim SF
+        if(_fastSim){
+            //TODO add when available
+            _weight *= 1;
+            //_weight*=_susyMod->applyFastSimLepSfRA7(_candList _vc->get("nTrueInt"),0);
+            //uncertainties
+            //if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
+            //    _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_candList, _vc->get("nTrueInt"), 1);
+            //if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
+            //    _weight *= _susyMod->getVarWeightFastSimLepSFRA7(, -1);
         }
     } 
     counter("lepton SF");
