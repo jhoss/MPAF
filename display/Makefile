@@ -77,13 +77,14 @@ CXXFLAGS   += -I. -I.. $(patsubst %, -I%, $(MODULES))
 # ROOT
 ROOTCFLAGS := $(shell root-config --cflags)
 ROOTGLIBS  := $(shell root-config --glibs) -lMinuit -lMinuit2 -lHtml -lEG -lThread -lRooFit -lRooFitCore -lFoam
-
+BOOSTFLAGS  := -I/mnt/t3nfs01/data01/shome/mmarionn/boost/boost_1_61_0
 # add possible new dependencies
 # -lMinuit2
 
 ROOTCINT   := rootcint
+CXXFLAGS   += $(BOOSTFLAGS)
 CXXFLAGS   += $(ROOTCFLAGS)
-LIBS       += $(ROOTGLIBS) 
+LIBS       += $(ROOTGLIBS)
 
 # libxml2
 #CXXFLAGS   += $(shell xml2-config --cflags)

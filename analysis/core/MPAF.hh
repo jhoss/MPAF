@@ -37,9 +37,11 @@
 #include "analysis/core/VarClass.hh"
 #include "analysis/utils/CustomTypes.cc"
 #include "analysis/utils/Debug.cc"
+#include "analysis/utils/JSONUtils.hh"
 #include "analysis/utils/KineUtils.hh"
 #include "analysis/utils/Parser.hh"
 #include "analysis/utils/Tools.hh"
+#include "analysis/utils/SystemUtils.hh"
 #include "analysis/utils/Verbose.hh"
 #include "analysis/utils/mt2_bisect.h"
 

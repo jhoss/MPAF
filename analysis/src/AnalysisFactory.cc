@@ -70,16 +70,17 @@ AnalysisFactory::get(const string& analysis, const string& cfg) {
   if(analysis=="FRinSitu") {
     return new FRinSitu(cfg);
   }
+*/
   if(analysis=="SSDL2015") {
     return new SSDL2015(cfg);
   }
   if(analysis=="DoubleCounterChecker") {
     return new DoubleCounterChecker(cfg);
   }
-  if(analysis=="UncertaintyTest") {
-    return new UncertaintyTest(cfg);
-  }
-*/  //if(analysis=="Comissioning") {
+  // if(analysis=="UncertaintyTest") {
+  //   return new UncertaintyTest(cfg);
+  // }
+  //if(analysis=="Comissioning") {
   //  return new Comissioning(cfg);
   //}
   return 0;
