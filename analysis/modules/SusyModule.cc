@@ -1166,7 +1166,8 @@ SusyModule::applyLepSfRA7(const CandList& cands){
       sf *= _dbm->getDBValue("muIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
       sf *= _dbm->getDBValue("muDxyzSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
       sf *= _dbm->getDBValue("muSIPSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      //TODO: uncomment when ISO SF avaibale sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("muTrkSFDb", std::min((std::abs(cand->eta())),maxEta));
     }
        
     if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;
@@ -2664,7 +2665,7 @@ SusyModule::applyLeptonSF(float pt, float eta, float pdgId, bool isEmuIso, float
        weight *= getSingleSF("eleIsoSFNonDb", pt, std::abs(eta), var);
      
 
-  } else if(std::abs(pdgId)==11) {
+  } else if(std::abs(pdgId)==13) {
     weight *= getSingleSF("muIdSFDb", pt, std::abs(eta), var);
     //weight *= getSingleSF("muIsoSFDb", pt, std::abs(eta), var); //not yet available
     weight *= getSingleSF("muDxyzSFDb", pt, std::abs(eta), var);

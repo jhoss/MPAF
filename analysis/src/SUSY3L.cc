@@ -389,7 +389,8 @@ void SUSY3L::initialize(){
     _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
     _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
     _dbm->loadDb("muSIPSFDb","db2016/TnP_MuonID_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root" ,"pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
-    //_dbm->loadDb("muIsoSFDb","db2016/TODO: add name here","");
+    _dbm->loadDb("muIsoSFDb","db2016/TnP_MuonID_NUM_MultiIsoLoose_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
+    _dbm->loadDb("muTrkSFDb","db2016/general_tracks_and_early_general_tracks_corr_ratio.root","mutrksfptg10");
     
     //fastSim TODO: to be added
     //electrons
@@ -509,22 +510,22 @@ void SUSY3L::modifyWeight() {
 
 //____________________________________________________________________________
 void SUSY3L::run(){
+ 
+    //skim tree
+    if(_skim) {
+        if(_vc->get("nLepGood") >2) fillSkimTree();
+        return; 
+    }
    
-     //manual doublecounting protection
-     if(_vc->get("isData") && _sampleName.find("Run2016D_PromptReco_v2_runs_276284_276811")!=string::npos && _vc->get("run")<=276384) return;
+    //manual doublecounting protection
+    if(_vc->get("isData") && _sampleName.find("Run2016D_PromptReco_v2_runs_276284_276811")!=string::npos && _vc->get("run")<=276384) return;
     
     //filter bad lumi sections
     if(_vc->get("isData") && !_jsonUtils->isGoldenEvent(_vc->get("run"), _vc->get("lumi") ) ) return;
   
     //set cut values
     setBaselineRegion();
-
-    //skim tree
-    if(_skim) {
-        if(_vc->get("nLepGood") >2) fillSkimTree();
-        return; 
-    }
-    
+   
     //increment event counter, used as denominator for yield calculation
     counter("denominator");
 
