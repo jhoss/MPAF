@@ -382,9 +382,9 @@ void SUSY3L::initialize(){
    
     //fullsim lepton SF
     //electrons
-    _dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
-    _dbm->loadDb("eleIdSFIsoDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
-    _dbm->loadDb("eleIsoSFIsoDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
+    //_dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
+    _dbm->loadDb("eleIdSFDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
+    _dbm->loadDb("eleIsoSFDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
     //muons
     _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
     _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
@@ -550,6 +550,8 @@ void SUSY3L::run(){
     
     //minimal selection and collection of kinematic variables
     if(!collectKinematicObjects()) return;
+    
+    counter("lepton multiplicity");
  
     //event reweighting for systematic uncertainties 
     if(_runSystematics) systUnc();
@@ -558,8 +560,7 @@ void SUSY3L::run(){
     //btag-scale factors
     if(!_vc->get("isData") && !_closure ) {
         if(!isInUncProc())  {
-	        _btagW = _susyMod->bTagSF( _jets, _jetsIdx, _bJets, _bJetsIdx, 0, _fastSim, 0);
-	        _weight *= _btagW;
+	        _weight *= _susyMod->bTagSF( _jets, _jetsIdx, _bJets, _bJetsIdx, 0, _fastSim, 0);
         }
         else if(isInUncProc() && getUncName()=="btag" && getUncDir()==SystUtils::kUp )
 	        _weight *= _susyMod->bTagSF( _jets, _jetsIdx, _bJets,_bJetsIdx, 1, _fastSim); 
@@ -570,7 +571,7 @@ void SUSY3L::run(){
         else if(isInUncProc() && getUncName()=="fs_btag" && getUncDir()==SystUtils::kDown )
 	        _weight *= _susyMod->bTagSF( _jets, _jetsIdx, _bJets, _bJetsIdx, 0, _fastSim, -1); 
         else //other syst. variations
-	        _weight *= _btagW;
+	        _weight *= _susyMod->bTagSF( _jets, _jetsIdx, _bJets, _bJetsIdx, 0, _fastSim, 0);
     }
     counter("b-tag SF");
 

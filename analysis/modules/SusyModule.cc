@@ -1159,9 +1159,8 @@ SusyModule::applyLepSfRA7(const CandList& cands){
     cand = cands[il];
     int flavor = cand->pdgId();
     if(std::abs(flavor)==11){
-      sf *= _dbm->getDBValue("eleIsoSFNonDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("eleIdSFIsoDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("eleIsoSFNonDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+      sf *= _dbm->getDBValue("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
     }
     else if(std::abs(flavor) == 13){
       sf *= _dbm->getDBValue("muIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
@@ -1281,7 +1280,7 @@ SusyModule::bTagSF(CandList& jets ,
   }
 
   //cout<<"pd " <<pdata<<"  "<<pmc<<endl;
-  if(pmc != 0) return pdata/pmc;
+  if(pmc != 0 && pdata !=0 ) return pdata/pmc;
   return 1.0;
 
 }
