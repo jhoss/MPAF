@@ -5,8 +5,9 @@ void susy3l_scanSigBENCH(){
 
     //general parameters ********************* general parameters
     //string sig="fs_t1ttttBENCH";
-    string sig="fs_t1ttttBENCH";
+    string sig="fs_t5qqqqvvBENCH";
     bool allSR = false;
+    bool aggregate = true;
 
     string dir="SUSY3L";
     string fileName="merged_4fb";
@@ -124,7 +125,7 @@ void susy3l_scanSigBENCH(){
 	//md.addNuisanceParameter("fs_hlt"            ,sig                                    ,"shape","");
     md.addNuisanceParameter("isr"               ,sig                                    ,"shape","");
 	md.addNuisanceParameter("scale"             ,sig                                    ,"shape","");
-	md.addNuisanceParameter("met_fast"          ,sig                                    ,"shape","");
+	//md.addNuisanceParameter("met_fast"          ,sig                                    ,"shape","");
 
 
     //flat uncertanties
@@ -164,10 +165,17 @@ void susy3l_scanSigBENCH(){
         "OffZSR013", "OffZSR014", "OffZSR016"
     };
 
-    if(allSR == true){
+    if(allSR && !aggregate ){
         for(int i=0;i<nBins;i++) {
             vcategs.push_back( categs[i] );
         }
+    }
+    else if(aggregate){
+        nBins = 2;
+        //vcategs.push_back( "OffZSR013" );
+        //vcategs.push_back( "OffZSR016" );
+        vcategs.push_back( "OnZSR016" );
+        vcategs.push_back( "OnZSR017" );
     }
     else{
         //section for datacards with one SR only

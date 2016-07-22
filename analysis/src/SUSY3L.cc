@@ -511,10 +511,10 @@ void SUSY3L::modifyWeight() {
 void SUSY3L::run(){
    
      //manual doublecounting protection
-     if(_isData && _sampleName.find("Run2016D_PromptReco_v2_runs_276284_276811")!=string::npos && _vc->get("run")<=276384) return;
+     if(_vc->get("isData") && _sampleName.find("Run2016D_PromptReco_v2_runs_276284_276811")!=string::npos && _vc->get("run")<=276384) return;
     
     //filter bad lumi sections
-    if(_isData && !_jsonUtils->isGoldenEvent(_vc->get("run"), _vc->get("lumi") ) ) return;
+    if(_vc->get("isData") && !_jsonUtils->isGoldenEvent(_vc->get("run"), _vc->get("lumi") ) ) return;
   
     //set cut values
     setBaselineRegion();
@@ -664,6 +664,18 @@ void SUSY3L::run(){
     bool baseSel = multiLepSelection();
     if(!baseSel){return;}
 
+    /*
+    if(_isFake && _vc->get("isData")){
+        for(size_t i=0; i<_fakableNotTightLepsPtCorrCut.size(); i++){
+            if(std::abs(_fakableNotTightLepsPtCorrCut[i]->pdgId())==11){
+                fill("eleMap", _fakableNotTightLepsPtCorrCut[i]->pt(), _fakableNotTightLepsPtCorrCut[i]->eta(), _weight);
+            }
+            else{
+                fill("muonMap", _fakableNotTightLepsPtCorrCut[i]->pt(), _fakableNotTightLepsPtCorrCut[i]->eta(), _weight);
+            }
+        }
+    }*/
+
     //signal event
     if(!_isFake){
         setWorkflow(kGlobal);
@@ -709,6 +721,14 @@ void SUSY3L::defineOutput(){
     
     if(!_doPlots) return; 
 
+    //bin boundaries for muonMap and eleMap histo
+    std::vector<float> binsX;
+    binsX = {10.0, 15.0, 25.0, 35.0, 50.0, 70.0};
+    std::vector<float> binsYel;
+    binsYel = { 0.0, 0.8, 1.479, 2.5};
+    std::vector<float> binsYmu;
+    binsYmu = { 0.0, 1.2, 2.1, 2.4};
+
     //event based observables
     _hm->addVariable("HT"        , 1000,   0.0, 1000.0, "H_{T} (GeV)"                                           );
     _hm->addVariable("MET"       , 1000,   0.0, 1000.0, "E^{miss}_{T} (GeV)"                                    );
@@ -722,6 +742,8 @@ void SUSY3L::defineOutput(){
     _hm->addVariable("el_multiplicity"  ,  10,      0.0,   10.0,    "N_{el}"                                    );
     _hm->addVariable("mu_multiplicity"  ,  10,      0.0,   10.0,    "N_{#mu}"                                   );
     _hm->addVariable("lep_multiplicity" ,  10,      0.0,   10.0,    "N_{lep}"                                   );
+    //_hm->addVariable("muonMap"          , 5, binsX, 3, binsYmu, "p_{T,#mu}^{corr} (GeV)", "|#eta_{#mu}|"       );
+    //_hm->addVariable("eleMap"           , 5, binsX, 3, binsYel, "p_{T,e}^{corr} (GeV)", "|#eta_{e}|"       );
 
     vector<string> wfs({"OnZBaseline","OffZBaseline",
 	  "OnZBaseline_Fake", "OffZBaseline_Fake",
@@ -1032,7 +1054,7 @@ bool SUSY3L::collectKinematicObjects(){
     if((isInUncProc() &&  getUncName()=="jes") )
         ext += ((SystUtils::kUp==getUncDir())?"_jecUp":"_jecDown");
     _met = Candidate::create(_vc->get(ext+"_pt"), _vc->get(ext+"_phi") );
-    // if(!_isData && (isInUncProc() &&  getUncName()=="met_fast") )
+    // if(!_vc->get("isData") && (isInUncProc() &&  getUncName()=="met_fast") )
     //   _met = Candidate::create(_vc->get(ext+"_genPt"), _vc->get(ext+"_genPhi") );
     _metPt = _met->pt();
 
@@ -3038,7 +3060,6 @@ void SUSY3L::systUnc(){
 
     //uncertanties
     float lumiUnc           = 0.027;
-    float hltUnc            = 0.03;
     float lepUnc            = 0.06;
     float rareUnc           = 0.50;
     float xgUnc             = 0.50;
