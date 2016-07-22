@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-//void susy3l_data_VARIABLE_REGION() {
-void susy3l_data() {
+void susy3l_data_VARIABLE_REGION() {
+//void susy3l_data() {
     md.refresh();
 
 
@@ -15,7 +15,7 @@ void susy3l_data() {
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
     string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="merged_v2_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     string hName="";
 
@@ -32,9 +32,9 @@ void susy3l_data() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =true;
+    bool manual =false;
     if(!manual) string region = "REGION";
-    else string region = "WZCR";
+    else string region = "OffZBaseline";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
     else{string obs = "njets";}
@@ -463,7 +463,7 @@ void susy3l_data() {
     
     md.doPlot();
     // md.doStatisticsPlot();
-    md.getStatistics("global_OffZSR001", true, false);
+    //md.getStatistics("global_OffZSR001", true, false);
        
     if(printTable){
     //print result table
