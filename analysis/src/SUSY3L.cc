@@ -164,7 +164,9 @@ void SUSY3L::initialize(){
         _vc->registerVar("Jet"+extsJEC[ie]+"_mass"                        );     //jet mass
         _vc->registerVar("Jet"+extsJEC[ie]+"_rawPt"                       );
         _vc->registerVar("Jet"+extsJEC[ie]+"_mcFlavour"                   );
-	_vc->registerVar("Jet"+extsJEC[ie]+"_partonMotherId"              );
+	    _vc->registerVar("Jet"+extsJEC[ie]+"_partonMotherId"              );
+	    _vc->registerVar("Jet"+extsJEC[ie]+"_mcPt"                        );
+	    _vc->registerVar("Jet"+extsJEC[ie]+"_chHEF"                       );
 
         //discarded jets (because of leptons cleaning)
         _vc->registerVar("nDiscJet"+extsJEC[ie]                           );
@@ -176,7 +178,9 @@ void SUSY3L::initialize(){
         _vc->registerVar("DiscJet"+extsJEC[ie]+"_mass"                    );
         _vc->registerVar("DiscJet"+extsJEC[ie]+"_btagCSV"                 );
         _vc->registerVar("DiscJet"+extsJEC[ie]+"_mcFlavour"               );
-	_vc->registerVar("DiscJet"+extsJEC[ie]+"_partonMotherId"          );
+	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_partonMotherId"          );
+	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_mcPt"                    );
+	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_chHEF"                   );
 
     }
 
@@ -363,14 +367,6 @@ void SUSY3L::initialize(){
 
 
     //load lepton scale factors
-    //fullSim muons
-    //_dbm->loadDb("FullSimMuID", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass" );
-    //_dbm->loadDb("FullSimMuIP2D", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_TightIP2D_DENOM_LooseID_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass" );
-    //_dbm->loadDb("FullSimMuIP3D", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_TightIP3D_DENOM_LooseID_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass" );
-    //_dbm->loadDb("FullSimMuISO", "lepSF_RA7/fullSim/muons/TnP_MuonID_NUM_MultiIsoMedium_DENOM_MediumID_VAR_map_pt_eta.root", "pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_Medium_pass_&_tag_IsoMu20_pass" );
-    //fullSim electrons
-    //_dbm->loadDb("FullSimElIDandIP", "lepSF_RA7/fullSim/electrons/kinematicBinSFele.root", "MVATight_and_IDEmu_and_TightIP2D_and_TightIP3D" );
-    //_dbm->loadDb("FullSimElISO", "lepSF_RA7/fullSim/electrons/kinematicBinSFele.root", "MultiIsoTight_vs_AbsEta" );
     //fastSim muons
     //_dbm->loadDb("FastSimMuID", "lepSF_RA7/fastSim/muons/sf_mu_mediumID.root", "histo3D" );
     //_dbm->loadDb("FastSimMuIP2D", "lepSF_RA7/fastSim/muons/sf_mu_tightIP2D.root", "histo3D" );
@@ -3024,7 +3020,7 @@ bool SUSY3L::checkMassBenchmark(){
 void SUSY3L::loadScanHistogram(){
   
     if(_fastSim){ 
-        string mpafenv=string(getenv ("MPAF"))+"/workdir/database/db2016/histoScan"+_susyProcessName".root";
+        string mpafenv=string(getenv ("MPAF"))+"/workdir/database/db2016/histoScan"+_susyProcessName+".root";
         TFile* file=new TFile(mpafenv.c_str(),"read");
         _hScanWeight=(TH3D*)file->Get("CountSMS");
 	_hScanWeight2D=(TH2D*)file->Get("CountSMS2D");
