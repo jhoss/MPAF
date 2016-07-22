@@ -533,7 +533,7 @@ void HistoManager::fill(string var, int ds, string type, float value, float weig
     if( _itVar == _variables.end() ) {
 
       bool isGbl=_variables[var].IsGlobal();
-      if(!_itVar->second.isRelevantUnc(type)) return;
+      //if(!_itVar->second.isRelevantUnc(type)) return;
 
       if( _cItVar->second.binsX.size() == 2) {
 	addVariable(nameH, _cItVar->second.nBX, _cItVar->second.binsX[0], _cItVar->second.binsX[1],

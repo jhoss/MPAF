@@ -353,12 +353,13 @@ void SUSY3L::initialize(){
     }
 
     else if(_FR=="FR2016"){
-        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_6300pb.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
+        
+        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
         //QCD maps
         _dbm->loadDb("ElNIsoMC"  , "db2016/qcd_FR_RA7.root", "ElMapPtCorr_non");
         _dbm->loadDb("MuNIsoMC"  , "db2016/qcd_FR_RA7.root", "MuMapPtCorr_non");
@@ -1064,8 +1065,8 @@ bool SUSY3L::collectKinematicObjects(){
             _candList.push_back(_tightLepsPtCutMllCut[i]);
             _candListIdx.push_back(_tightLepsPtCutMllCutIdx[i]);
         }
-   }
-   else if(_tightLepsPtCutMllCut.size()+_fakableNotTightLepsPtCut.size()>2){
+    }
+    else if(_tightLepsPtCutMllCut.size()+_fakableNotTightLepsPtCut.size()>2){
         //merge candidate lists
         CandList lepList;
         lepList.insert(lepList.end(), _tightLepsPtCutMllCut.begin(), _tightLepsPtCutMllCut.end() );
@@ -1454,8 +1455,8 @@ float SUSY3L::getFR(Candidate* cand, int idx) {
     //distinguish data and mc
     if(_vc->get("isData")!=1) db +="MC"; 
 
-    if(isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kUp ) db+="Up";
-    if(isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kDown ) db+="Do";
+    if(_vc->get("isData") && isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kUp ) db+="Up";
+    if(_vc->get("isData") && isInUncProc() && getUncName()=="fakes_EWK" && getUncDir()==SystUtils::kDown ) db+="Do";
 
     //get pt and eta of candidate
     float ptVal=cand->pt();
@@ -1688,13 +1689,13 @@ void SUSY3L::advancedSelection(int WF){
         counter("gen matching");
     }
     counter("selected");
-    fillHistos(true);
+    fillHistos(false);
 
     setWorkflow(WF);
 
     counter("selected");
     
-    fillHistos(true);
+    fillHistos(false);
 
     //categorize events into signal regions
     if(_categorization){
@@ -1735,7 +1736,7 @@ void SUSY3L::advancedSelection(int WF){
         setWorkflow(wf);
         if(getCurrentWorkflow()==kGlobal_Fake){cout << "WARNING " << offset <<  endl;}
         counter("signal region categorization");
-        fillHistos(true);
+        fillHistos(false);
         counter("selected");
     }
 
