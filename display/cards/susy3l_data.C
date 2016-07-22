@@ -14,8 +14,8 @@ void susy3l_data() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    string fileName="merged_v2_4fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="merged_v2_4fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    string fileList="merged_v2_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     string hName="";
 
@@ -39,7 +39,7 @@ void susy3l_data() {
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
     else{string obs = "njets";}
         
-    float lumi=4300; //pb-1 19470
+    float lumi=12900; //pb-1 19470
     float energy=13; //TeV
 
     //if(lumi>804 && data && !(region=="WZCR" || region=="FakeCR")){
@@ -360,10 +360,25 @@ void susy3l_data() {
     //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_274444_275125"      , "non-prompt"          , 18, scale    );
     //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "non-prompt"          , 18, scale    );
     //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "non-prompt"          , 18, scale    );
-     //4/fb production by Mattieu
-    md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"    , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"        , "non-prompt"          , 18, scale    );
+     //12.9/fb production by Mattieu
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"      , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"    , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
  
     //signal
     if(sigs=="t"){
@@ -387,19 +402,25 @@ void susy3l_data() {
     
     //data
     if(data){
-    //4/fb production by Marco
-    //md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_274443"    , "data"          , kBlack    );
-    //md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_274443"        , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_274444_275125"      , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "data"          , kBlack    );
-    //md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "data"          , kBlack    );
-    //4/fb production by Mattieu
-    md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "data"          , kBlack    );
-    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"    , "data"          , kBlack    );
-    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"        , "data"          , kBlack    );
-    
-    
+    //12.9/fb 
+    md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"        , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"     , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"     , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"     , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"     , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"      , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"     , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"         , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"         , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"         , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"         , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016DPromptReco_v2_runs_276283_276384"          , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"         , "data"          , kBlack    );
     }
 
 

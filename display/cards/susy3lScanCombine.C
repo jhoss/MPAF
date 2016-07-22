@@ -22,7 +22,7 @@ void susy3l_scanSigBENCH(){
     md.anConf.configureData(false, 0, mcOnly);
      
     //Lumis( or XSections ) pb-1 & KFactors ************************************
-    float lumi=4300; //pb-1 19470  
+    float lumi=12900; //pb-1 19470  
     float energy=13; //TeV
 
     bool useXS=true;
@@ -70,9 +70,24 @@ void susy3l_scanSigBENCH(){
     md.addDataCardSample( "TTTT", "rares"); 
     md.addDataCardSample( "tZq_ll", "rares"); 
 
-    md.addDataCardSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125", "fakes"); 
-    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125", "fakes"); 
-    md.addDataCardSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125", "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"    , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"    , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"    , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"    , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"     , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"    , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"  , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"  , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"  , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"  , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"   , "fakes"); 
+    md.addDataCardSample( "data:Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"  , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"      , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"      , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"      , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"       , "fakes"); 
+    md.addDataCardSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"      , "fakes"); 
 
     /*
     md.addDataCardSample( "TGJets", "pseudodata"); 
@@ -104,9 +119,24 @@ void susy3l_scanSigBENCH(){
     */
 
  
-    md.addDataCardSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125", "data"); 
-    md.addDataCardSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125", "data"); 
-    md.addDataCardSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125", "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"      , "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"      , "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"      , "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"       , "data"); 
+    md.addDataCardSample( "DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"      , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"    , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"    , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"    , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"    , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"     , "data"); 
+    md.addDataCardSample( "DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"    , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"        , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"        , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"        , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"        , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016DPromptReco_v2_runs_276283_276384"         , "data"); 
+    md.addDataCardSample( "MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"        , "data"); 
 
 
 
@@ -122,10 +152,9 @@ void susy3l_scanSigBENCH(){
     //fastSim related uncertainties
     md.addNuisanceParameter("fs_btag"           ,sig                                    ,"shape","");
     //md.addNuisanceParameter("fs_lep"            ,sig                                    ,"shape","");
-	//md.addNuisanceParameter("fs_hlt"            ,sig                                    ,"shape","");
     md.addNuisanceParameter("isr"               ,sig                                    ,"shape","");
 	md.addNuisanceParameter("scale"             ,sig                                    ,"shape","");
-	//md.addNuisanceParameter("met_fast"          ,sig                                    ,"shape","");
+	md.addNuisanceParameter("met_fast"          ,sig                                    ,"shape","");
 
 
     //flat uncertanties
