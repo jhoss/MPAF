@@ -398,9 +398,9 @@ void SUSY3L::initialize(){
 
 
     //load pile-up weights 80X
-    _dbm->loadDb("puWeights","db2016/puWeights_4fb.root","puw");
-    _dbm->loadDb("puWeightsUp","db2016/puWeights_4fb_Up.root","puw");
-    _dbm->loadDb("puWeightsDown","db2016/puWeights_4fb_Down.root","puw");
+    _dbm->loadDb("puWeights","db2016/puWeights_12fb.root","puw");
+    _dbm->loadDb("puWeightsUp","db2016/puWeights_12fb_Up.root","puw");
+    _dbm->loadDb("puWeightsDown","db2016/puWeights_12fb_Down.root","puw");
  
     //load pile-up weights 74X
     _dbm->loadDb("puWeights74X","pileupWeights.root","pileup");
@@ -491,8 +491,8 @@ void SUSY3L::modifyWeight() {
             string db="puWeights";
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kUp==getUncDir() ){db="puWeightsUp";}
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kDown==getUncDir() ){db="puWeightsDown";}
-	        //_weight *= _dbm->getDBValue(db, _vc->get("nTrueInt") ); 
-            _weight *= _susyMod->getPuWeight( _vc->get("nVert") ); //TODO: roll back to function above
+	        _weight *= _dbm->getDBValue(db, _vc->get("nTrueInt") ); 
+            //_weight *= _susyMod->getPuWeight( _vc->get("nVert") ); 
         }
         if(!_closure && _version == 4){
             string db="puWeights74X";
@@ -3060,7 +3060,7 @@ float SUSY3L::getFastSimXFactor(float dir){
 void SUSY3L::systUnc(){
 
     //uncertanties
-    float lumiUnc           = 0.027;
+    float lumiUnc           = 0.062;
     float lepUnc            = 0.09;
     float rareUnc           = 0.50;
     float xgUnc             = 0.50;
