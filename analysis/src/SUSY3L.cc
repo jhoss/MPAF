@@ -416,11 +416,10 @@ void SUSY3L::initialize(){
         addManualSystSource("btag",SystUtils::kNone);
         addManualSystSource("jes",SystUtils::kNone);
         addManualSystSource("fakes_EWK",SystUtils::kNone);
-        //addManualSystSource("pu",SystUtils::kNone);   //TODO: enable after pu uncertainty is available
+        addManualSystSource("pu",SystUtils::kNone); 
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
         //addManualSystSource("fs_lep",SystUtils::kNone);
-        //addManualSystSource("fs_hlt",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
 	    addManualSystSource("met_fast",SystUtils::kNone);
@@ -3025,7 +3024,7 @@ bool SUSY3L::checkMassBenchmark(){
 void SUSY3L::loadScanHistogram(){
   
     if(_fastSim){ 
-        string mpafenv=string(getenv ("MPAF"))+"/workdir/database/db2016/histoScan"+_susyProcessName+"_2016.root";
+        string mpafenv=string(getenv ("MPAF"))+"/workdir/database/db2016/histoScan"+_susyProcessName".root";
         TFile* file=new TFile(mpafenv.c_str(),"read");
         _hScanWeight=(TH3D*)file->Get("CountSMS");
 	_hScanWeight2D=(TH2D*)file->Get("CountSMS2D");
@@ -3062,7 +3061,7 @@ void SUSY3L::systUnc(){
 
     //uncertanties
     float lumiUnc           = 0.027;
-    float lepUnc            = 0.06;
+    float lepUnc            = 0.09;
     float rareUnc           = 0.50;
     float xgUnc             = 0.50;
     float wzNormUnc         = 0.15;
