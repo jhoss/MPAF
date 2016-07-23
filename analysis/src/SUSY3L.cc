@@ -150,7 +150,7 @@ void SUSY3L::initialize(){
         //missing transverse energy
         _vc->registerVar("met"+extsJEC[ie]+"_pt"                          );     //missing tranvers momentum
         _vc->registerVar("met"+extsJEC[ie]+"_phi"                         );     //phi of missing transvers momentum
-	_vc->registerVar("met"+extsJEC[ie]+"_genPt"                          );     //missing tranvers momentum
+	    _vc->registerVar("met"+extsJEC[ie]+"_genPt"                          );     //missing tranvers momentum
         _vc->registerVar("met"+extsJEC[ie]+"_genPhi"                         );     //phi of missing transvers momentum
 
         //jets
@@ -167,6 +167,7 @@ void SUSY3L::initialize(){
 	    _vc->registerVar("Jet"+extsJEC[ie]+"_partonMotherId"              );
 	    _vc->registerVar("Jet"+extsJEC[ie]+"_mcPt"                        );
 	    _vc->registerVar("Jet"+extsJEC[ie]+"_chHEF"                       );
+	    _vc->registerVar("Jet"+extsJEC[ie]+"_puId"                        );
 
         //discarded jets (because of leptons cleaning)
         _vc->registerVar("nDiscJet"+extsJEC[ie]                           );
@@ -181,6 +182,7 @@ void SUSY3L::initialize(){
 	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_partonMotherId"          );
 	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_mcPt"                    );
 	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_chHEF"                   );
+	    _vc->registerVar("DiscJet"+extsJEC[ie]+"_puId"                    );
 
     }
 
@@ -354,12 +356,12 @@ void SUSY3L::initialize(){
 
     else if(_FR=="FR2016"){
         
-        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
-        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
-        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_try1.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
+        _dbm->loadDb("ElNIso"    , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatElMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("MuNIso"    , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatMuMapPtCorr_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatElMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoUp"  , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatMuMapPtCorrHI_non/datacorrUCSX");
+        _dbm->loadDb("ElNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatElMapPtCorrLO_non/datacorrUCSX");
+        _dbm->loadDb("MuNIsoDo"  , "db2016/FakeRatio2016Bmu_RA7_12fb.root", "MR_RatMuMapPtCorrLO_non/datacorrUCSX");
         //QCD maps
         _dbm->loadDb("ElNIsoMC"  , "db2016/qcd_FR_RA7.root", "ElMapPtCorr_non");
         _dbm->loadDb("MuNIsoMC"  , "db2016/qcd_FR_RA7.root", "MuMapPtCorr_non");
@@ -463,7 +465,7 @@ void SUSY3L::modifyWeight() {
         return: none
     */ 
     
-    if(_vc->get("isData") != 1){
+    if(!_vc->get("isData")){
         //generator weights
         int LHESYS = _LHESYS;
         float Xfactor = 1;
@@ -1679,10 +1681,25 @@ void SUSY3L::advancedSelection(int WF){
     //extra cut for onZ to remove DY
     if(_isOnZ && _met->pt() < 70 && _HT < 400 && _nBJets<2) return;
  
-    //long long int evt=_vc->get("evt");
-    //if(_vc->get("isData") == 1 && _HT>400 && !_isFake) cout << _vc->get("run") << " " << _vc->get("lumi") << " " << evt << " " << _nMus << " " << _nEls << " " << _nTaus << " " << _nJets << " " << _nBJets <<  " " << _met->pt() << " " << _HT << " "  << _isOnZ  << " " << _isFake << endl;
-    //if(_vc->get("isData") == 1 && _HT<400 && !_isFake) return;
-    
+    /*long long int evt=_vc->get("evt");
+    if(_vc->get("isData") == 1 && _nJets>5 && !_isFake && !_isOnZ){
+        cout << "___________________________________________" << endl;
+        cout << _sampleName << endl;
+        cout << _vc->get("run") << " " << _vc->get("lumi") << " " << evt << " " << _nMus << " " << _nEls << " " << _nTaus << " " << _nJets << " " << _nBJets <<  " " << _met->pt() << " " << _HT << " "  << _isOnZ  << " " << _isFake << endl;
+        for(size_t il=0;il<_vc->get("nJet");il++) {
+            cout << "nJet " << il << " pt: " << _vc->get("Jet_pt", il)  << " eta: " << _vc->get("Jet_eta", il) << " phi: " << _vc->get("Jet_phi", il) << " puId: " << _vc->get("Jet_puId", il) << endl;
+        }
+        for(size_t il=0;il<_vc->get("nDiscJet");il++) {
+            cout << "nDiscJet " << il << " pt: " << _vc->get("DiscJet_pt", il)  << " eta: " << _vc->get("DiscJet_eta", il) << " phi: " << _vc->get("DiscJet_phi", il) << " puId: " << _vc->get("DiscJet_puId", il) << endl;
+        }
+        cout << "selected jets: " << endl;
+        for(size_t il=0;il<_jets.size();il++) {
+            cout << il << " pt: " << _jets[il]->pt() << " " << "eta: " << _jets[il]->eta() << " "<< "phi: " << _jets[il]->phi() <<  endl;
+        } 
+    }
+    if((_vc->get("isData") == 1 && _nJets<6 && !_isFake) || _isOnZ) return;
+    */
+
     //gen matching
     if(!_vc->get("isData") && _doGenMatch && !_isFake) {
         if(!passGenSelection()) return;

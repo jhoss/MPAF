@@ -8,14 +8,14 @@ void susy3l_data_VARIABLE_REGION() {
 
     //general parameters ********************* general parameters
     string dir="SUSY3L";
-    //string fileName="3l_test80Xskim"; //was treeName in LUNE susy_cut_lowpt
-    //string fileList="3l_test80Xskim"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileName="3l_test80Xskim"; //was treeName in LUNE susy_cut_lowpt
+    string fileList="3l_test80Xskim"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    //string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    //string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     string hName="";
 
@@ -281,7 +281,7 @@ void susy3l_data_VARIABLE_REGION() {
     //===============================================================
     // SDYJetsM50_HT600toInf_PU_S14_POSTLS170_skimamples **************************  samples
     //if( md.isInitStatus() ) {
-
+/*
     //rare
     md.anConf.addSample( "GGHZZ4L"                              ,  "rare"        , kMagenta-7, scale    );
     md.anConf.addSample( "VHToNonbb"                            ,  "rare"        , kMagenta-7, scale   );
@@ -334,7 +334,7 @@ void susy3l_data_VARIABLE_REGION() {
     //md.anConf.addSample( "WWTo2L2Nu"                            ,  "non-prompt"       , 18      );
     //md.anConf.addSample( "ZZTo2L2Nu"                            ,  "non-prompt"       , 18      );
 
-
+*/
 
 
 
@@ -351,7 +351,7 @@ void susy3l_data_VARIABLE_REGION() {
     md.anConf.addSample( "WWTo2L2Nu"                            ,  "other"       , kBlue+3      );
     md.anConf.addSample( "ZZTo2L2Nu"                            ,  "other"       , kBlue+3      );
 */
-
+/*
     //non-prompt predicted
     //4/fb production by Marco
     //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "non-prompt"          , 18, scale    );
@@ -379,7 +379,7 @@ void susy3l_data_VARIABLE_REGION() {
     md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
- 
+ */
     //signal
     if(sigs=="t"){
     md.anConf.addSample( "T1tttt_mGo1200_mChi800"                       ,  "T1tttt (1200) x10 sig"     , kBlue-3, 10 );
