@@ -76,27 +76,30 @@ void susy3l_data_VARIABLE_REGION() {
     if(obs == "njets"){
         md.setObservables("NJets" + region);
         int binning=1;
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
+        if(region=="WZCR"){double rangeX[2]={0,2};bool logYScale=false;}
+        else if(region == "FakeCR"){double rangeX[2]={1,3};bool logYScale=false;}
         else{double rangeX[2]={2,10};}
         //bool logYScale=true;
     }
     if(obs == "nbjets"){
         md.setObservables("NBJets" + region);
         int binning=1;
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,5};bool logYScale=false;}
+        if(region=="WZCR" ){double rangeX[2]={0,1};bool logYScale=false;}
+        else if(region == "FakeCR"){double rangeX[2]={1,2};bool logYScale=false;}
         else{double rangeX[2]={0,5};}
         //bool logYScale=true;
     }
     if(obs == "met"){
         md.setObservables("MET" + region);
-        if(region=="WZCR" || region == "FakeCR"){int binning=10; double rangeX[2]={0,120};bool logYScale=false;}
+        if(region=="WZCR" ){int binning=10; double rangeX[2]={30,100};bool logYScale=false;}
+        else if(region == "FakeCR"){int binning=10; double rangeX[2]={30,50};bool logYScale=false;}
         else{int binning=50; double rangeX[2]={50,500};}
         //bool logYScale=true;
     }
     if(obs == "ht"){
       md.setObservables("HT" + region);
         if(region=="WZCR"){int binning=50; double rangeX[2]={0,200};bool logYScale=false;}
-        else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,400};bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,300};bool logYScale=false;}
         else{int binning=60; double rangeX[2]={60,960};}
         //bool logYScale=true;
     }
@@ -104,23 +107,25 @@ void susy3l_data_VARIABLE_REGION() {
         if(region!="WZCR"){gROOT->ProcessLine(".q");}
         md.setObservables("MT" + region);
         int binning=10;
-        double rangeX[2]={0,200};
+        double rangeX[2]={50,170};
         bool logYScale=false;
     }
     if(obs == "pt1"){
         md.setObservables("pt_1st_lepton" + region);
         if(region=="WZCR"){int binning=10;}
         else int binning=20;
-        double rangeX[2]={0,200};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,260};
+        if(region=="WZCR"){bool logYScale=false;}
+        if(region=="FakeCR"){int binning=25; double rangeX[2]={0,150};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "pt2"){
         md.setObservables("pt_2nd_lepton" + region);
         if(region=="WZCR"){int binning=10;}
         else int binning=20;
-        double rangeX[2]={0,150};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,160};
+        if(region=="WZCR"){bool logYScale=false;}
+        if(region=="FakeCR"){int binning=20; double rangeX[2]={0,120};bool logYScale=false;}
         //bool logYScale=true;
     }   
     if(obs == "pt3"){
@@ -128,7 +133,8 @@ void susy3l_data_VARIABLE_REGION() {
         if(region=="WZCR"){int binning=10;}
         else int binning=20;
         double rangeX[2]={0,100};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        if(region=="WZCR" ){bool logYScale=false;}
+        if(region=="FakeCR"){int binning=20; double rangeX[2]={0,80};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "ftype"){
@@ -138,6 +144,7 @@ void susy3l_data_VARIABLE_REGION() {
         //bool logYScale=true;
     }
     if(obs == "flavor"){
+        if(region=="WZCR" || region=="FakeCR"){gROOT->ProcessLine(".q");}
         md.setObservables("flavor" + region);
         int binning=1;
         double rangeX[2]={0,5};
@@ -146,6 +153,7 @@ void susy3l_data_VARIABLE_REGION() {
         //bool logYScale=false;
     }
     if(obs == "srs"){
+        if(region=="WZCR" || region=="FakeCR"){gROOT->ProcessLine(".q");}
         md.setObservables("SRS" + region);
         int binning=1;
         if(region == "OnZBaseline"){double rangeX[2]={1,18};}
@@ -155,22 +163,22 @@ void susy3l_data_VARIABLE_REGION() {
     if(obs == "mu_multi"){
         md.setObservables("mu_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={0,6};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,5};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,3};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "el_multi"){
         md.setObservables("el_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={0,6};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,5};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,3};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "lep_multi"){
         md.setObservables("lep_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={3,7};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={3,6};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={3,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "nfo"){
@@ -281,7 +289,7 @@ void susy3l_data_VARIABLE_REGION() {
     //===============================================================
     // SDYJetsM50_HT600toInf_PU_S14_POSTLS170_skimamples **************************  samples
     //if( md.isInitStatus() ) {
-/*
+
     //rare
     md.anConf.addSample( "GGHZZ4L"                              ,  "rare"        , kMagenta-7, scale    );
     md.anConf.addSample( "VHToNonbb"                            ,  "rare"        , kMagenta-7, scale   );
@@ -334,7 +342,7 @@ void susy3l_data_VARIABLE_REGION() {
     //md.anConf.addSample( "WWTo2L2Nu"                            ,  "non-prompt"       , 18      );
     //md.anConf.addSample( "ZZTo2L2Nu"                            ,  "non-prompt"       , 18      );
 
-*/
+
 
 
 
@@ -351,7 +359,7 @@ void susy3l_data_VARIABLE_REGION() {
     md.anConf.addSample( "WWTo2L2Nu"                            ,  "other"       , kBlue+3      );
     md.anConf.addSample( "ZZTo2L2Nu"                            ,  "other"       , kBlue+3      );
 */
-/*
+
     //non-prompt predicted
     //4/fb production by Marco
     //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "non-prompt"          , 18, scale    );
@@ -379,7 +387,7 @@ void susy3l_data_VARIABLE_REGION() {
     md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
- */
+ 
     //signal
     if(sigs=="t"){
     md.anConf.addSample( "T1tttt_mGo1200_mChi800"                       ,  "T1tttt (1200) x10 sig"     , kBlue-3, 10 );

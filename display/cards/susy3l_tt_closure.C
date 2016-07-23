@@ -16,7 +16,7 @@ void susy3l_tt_closure() {
     bool nlo_vs_lo = false;
     bool fixLeg = true;
     bool scale = false;
-    bool mcmix = false;
+    bool mcmix = true;
 
     //if(md.isInitStatus()) {
     md.anConf.configureNames( dir, fileName, fileList );//, hName );
@@ -62,13 +62,13 @@ void susy3l_tt_closure() {
     if(obs == "njets"){
         md.dp.setObservables("NJets" + region);
         int binning=1;
-        double rangeX[2]={2,10};
+        double rangeX[2]={2,7};
         //bool logYScale=true;
     }
     if(obs == "nbjets"){
         md.dp.setObservables("NBJets" + region);
         int binning=1;
-        double rangeX[2]={0,5};
+        double rangeX[2]={0,4};
         //bool logYScale=true;
     }
     if(obs == "met"){
@@ -80,7 +80,7 @@ void susy3l_tt_closure() {
     if(obs == "ht"){
         md.dp.setObservables("HT" + region);
         int binning=60;
-        double rangeX[2]={0,1000};
+        double rangeX[2]={0,700};
         //bool logYScale=true;
     }
     if(obs == "pt1"){
@@ -98,7 +98,7 @@ void susy3l_tt_closure() {
     if(obs == "pt3"){
         md.dp.setObservables("pt_3rd_lepton" + region);
         int binning=10;
-        double rangeX[2]={0,100};
+        double rangeX[2]={0,60};
         //bool logYScale=true;
     }
     if(obs == "ftype"){
@@ -226,8 +226,8 @@ void susy3l_tt_closure() {
     //if(mcmix) md.anConf.addSample( "WJetsToLNu"                     ,  "W+jets"         , kBlue,        scaleWJets                      );
 
     //ttbar
-    md.anConf.addSample( "TTJets"                                   ,  "t#bar{t}"       , kBlue-10,     scaleTTJets                     );
-    md.anConf.addSample( "TT_pow_ext4"                              ,  "t#bar{t}"       , kBlue-10,     scaleTT_pow_ext4                );
+    //md.anConf.addSample( "TTJets"                                   ,  "t#bar{t}"       , kBlue-10,     scaleTTJets                     );
+    //md.anConf.addSample( "TT_pow_ext4"                              ,  "t#bar{t}"       , kBlue-10,     scaleTT_pow_ext4                );
     md.anConf.addSample( "TTJets_DiLepton"                          ,  "t#bar{t}"       , kBlue-10,     scaleTTJets_DiLepton            );
 
     //Drell-Yan
@@ -247,8 +247,8 @@ void susy3l_tt_closure() {
     if(mcmix) md.anConf.addSample( "_Fake:DYJetsToLL_M10to50_LO"    ,  "pseudodata"    , kBlack,        scaleDY10                       );
     if(mcmix) md.anConf.addSample( "_Fake:DYJetsToLL_M50_LO"        ,  "pseudodata"    , kBlack,        scaleDY50                       );
 
-    md.anConf.addSample( "_Fake:TTJets"                             ,  "pseudodata"    , kBlack,        scaleTTJets                     );
-    md.anConf.addSample( "_Fake:TT_pow_ext4"                        ,  "pseudodata"    , kBlack,        scaleTT_pow_ext4                );
+    //md.anConf.addSample( "_Fake:TTJets"                             ,  "pseudodata"    , kBlack,        scaleTTJets                     );
+    //md.anConf.addSample( "_Fake:TT_pow_ext4"                        ,  "pseudodata"    , kBlack,        scaleTT_pow_ext4                );
     md.anConf.addSample( "_Fake:TTJets_DiLepton"                    ,  "pseudodata"    , kBlack,        scaleTTJets_DiLepton            );
     
     // }
