@@ -2295,12 +2295,12 @@ vector<CandList> SUSY3L::build3LCombFake(const CandList tightLeps, vector<unsign
     
     //Z state categorization
     bool passZwindow = false;
-    for(size_t il=0;il<clist.size();il++) {
-        if(!_susyMod->passMllMultiVeto( clist[il], &clist, 76, 106, true) ){passZwindow = true; break;}
+    for(size_t il=0;il<clistPtCorr.size();il++) {
+        if(!_susyMod->passMllMultiVeto( clistPtCorr[il], &clistPtCorr, 76, 106, true) ){passZwindow = true; break;}
     }
     if(passZwindow){
         //MT requirement
-        _zPair = _susyMod->findZCand( &clist, 15, MT);
+        _zPair = _susyMod->findZCand( &clistPtCorr, 15, MT);
         if(!(_zPair[0] == 0 && _zPair[1] == 0)){
             _isOnZ=true;
             //compute MT of 3rd lepton with MET
@@ -3099,7 +3099,7 @@ void SUSY3L::systUnc(){
     float ttwNloLoHtmUnc    = 0.13;
     float ttwNloLoHthUnc    = 0.30;
     float ttzNloLoHtlUnc    = 0.13;
-    float ttzNloLoHtmUnc    = 0.06;
+    float ttzNloLoHtmUnc    = 0.13;
     float ttzNloLoHthUnc    = 0.70;
 
 
