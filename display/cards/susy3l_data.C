@@ -8,14 +8,14 @@ void susy3l_data_VARIABLE_REGION() {
 
     //general parameters ********************* general parameters
     string dir="SUSY3L";
-    string fileName="3l_test80Xskim"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="3l_test80Xskim"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    //string fileName="3l_test80Xskim"; //was treeName in LUNE susy_cut_lowpt
+    //string fileList="3l_test80Xskim"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    //string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    //string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
     string hName="";
 

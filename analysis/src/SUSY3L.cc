@@ -397,9 +397,9 @@ void SUSY3L::initialize(){
 
 
     //load pile-up weights 80X
-    _dbm->loadDb("puWeights","db2016/pileup12fb_63mb.root","pileup");
-    _dbm->loadDb("puWeightsUp","db2016/pileup12fb_63mb_XSecUp.root","pileup");
-    _dbm->loadDb("puWeightsDown","db2016/pileup12fb_63mb_XSecDown.root","pileup");
+    _dbm->loadDb("puWeights","db2016/puWeights_12fb_63mb.root","puw");
+    _dbm->loadDb("puWeightsUp","db2016/puWeights_12fb_63mb_Up.root","puw");
+    _dbm->loadDb("puWeightsDown","db2016/puWeights_12fb_63mb_Down.root","puw");
  
     //load pile-up weights 74X
     _dbm->loadDb("puWeights74X","pileupWeights.root","pileup");
@@ -492,7 +492,7 @@ void SUSY3L::modifyWeight() {
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kDown==getUncDir() ){db="puWeightsDown";}
 	        _weight *= _dbm->getDBValue(db, _vc->get("nTrueInt") ); 
             //_weight *= _susyMod->getPuWeight( _vc->get("nVert") ); 
-        }
+        } 
         if(!_closure && _version == 4){
             string db="puWeights74X";
 	        if((isInUncProc() &&  getUncName()=="pu") && SystUtils::kUp==getUncDir() ){db="puWeights74XUp";}
