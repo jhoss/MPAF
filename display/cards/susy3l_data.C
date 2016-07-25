@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-void susy3l_data_VARIABLE_REGION() {
-//void susy3l_data() {
+//void susy3l_data_VARIABLE_REGION() {
+void susy3l_data() {
     md.refresh();
 
 
@@ -14,8 +14,11 @@ void susy3l_data_VARIABLE_REGION() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
+    //string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    //string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+
 
     string hName="";
 
@@ -32,12 +35,12 @@ void susy3l_data_VARIABLE_REGION() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =false;
+    bool manual =true;
     if(!manual) string region = "REGION";
-    else string region = "OffZBaseline";
+    else string region = "OnZBaseline";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
-    else{string obs = "njets";}
+    else{string obs = "srs";}
         
     float lumi=12900; //pb-1 19470
     float energy=13; //TeV
@@ -100,6 +103,7 @@ void susy3l_data_VARIABLE_REGION() {
       md.setObservables("HT" + region);
         if(region=="WZCR"){int binning=50; double rangeX[2]={0,200};bool logYScale=false;}
         else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,300};bool logYScale=false;}
+        else if(region=="OffZBaseline"){int binning=60; double rangeX[2]={60,720};bool logYScale=true;}
         else{int binning=60; double rangeX[2]={60,960};}
         //bool logYScale=true;
     }
@@ -164,14 +168,14 @@ void susy3l_data_VARIABLE_REGION() {
         md.setObservables("mu_multiplicity" + region);
         int binning=1;
         double rangeX[2]={0,5};
-        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,3};bool logYScale=false;}
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "el_multi"){
         md.setObservables("el_multiplicity" + region);
         int binning=1;
         double rangeX[2]={0,5};
-        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,3};bool logYScale=false;}
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "lep_multi"){
@@ -469,7 +473,7 @@ void susy3l_data_VARIABLE_REGION() {
              mcOnly,cmsPrel, uncDet, closure, nlo_vs_lo, fixLeg);
     md.prepareDisplay();
     
-    md.doPlot();
+//    md.doPlot();
     // md.doStatisticsPlot();
     //md.getStatistics("global_OffZSR001", true, false);
        
@@ -481,8 +485,8 @@ void susy3l_data_VARIABLE_REGION() {
         string sr= "global_";
         sr += categs[i];
         //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, true, true);
-        else md.getStatistics(sr, true, false);
+        if(i==0) md.getStatistics(sr, false, true);
+        else md.getStatistics(sr, false, false);
     }
     cout << "______________________________________________" <<endl;
     cout << "Off-Z:" << endl;
@@ -490,8 +494,8 @@ void susy3l_data_VARIABLE_REGION() {
         string sr= "global_";
         sr += categs[i+17];
         //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, true, true);
-        else md.getStatistics(sr, true, false);
+        if(i==0) md.getStatistics(sr, false, true);
+        else md.getStatistics(sr, false, false);
     }
     }
 

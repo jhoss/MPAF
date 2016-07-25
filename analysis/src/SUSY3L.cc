@@ -382,8 +382,8 @@ void SUSY3L::initialize(){
     //fullsim lepton SF
     //electrons
     //_dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
-    _dbm->loadDb("eleIdSFDb","db2016/electronScaleFactors.root","GsfElectronToTightID2D3D");
-    _dbm->loadDb("eleIsoSFDb","db2016/electronScaleFactors.root","MVATightElectronToMultiIsoEmu");
+    _dbm->loadDb("eleIdSFDb","db2016/scaleFactors.root","GsfElectronToTightID2D3D");
+    _dbm->loadDb("eleIsoSFDb","db2016/scaleFactors.root","MVATightElectronToMultiIsoM");
     //muons
     _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
     _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
