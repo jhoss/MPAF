@@ -1148,8 +1148,7 @@ SusyModule::getFastSimLepSF(Candidate* lep1, Candidate* lep2, int nVert){
 }
 
 float
-SusyModule::applyLepSfRA7(const CandList& cands){
-
+SusyModule::applyLepSfRA7(const CandList& cands, int var){
   if(_dbm==nullptr) {cout<<"Error, DB manager not set in the susy module, please change the constructor"<<endl; abort();}
   float sf = 1.;
   float maxPt = 119.9;
@@ -1158,16 +1157,43 @@ SusyModule::applyLepSfRA7(const CandList& cands){
   for(size_t il=0; il<cands.size();il++){
     cand = cands[il];
     int flavor = cand->pdgId();
+    //electrons
     if(std::abs(flavor)==11){
-      sf *= _dbm->getDBValue("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-    }
-    else if(std::abs(flavor) == 13){
-      sf *= _dbm->getDBValue("muIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("muDxyzSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("muSIPSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
-      sf *= _dbm->getDBValue("muTrkSFDb", std::min((std::abs(cand->eta())),maxEta));
+        if(var==0){
+            sf *= _dbm->getDBValue("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+            sf *= _dbm->getDBValue("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+            sf *= _dbm->getDBValue("eleTrkSFDb", cand->eta(),100);
+        }
+        else if(var==1){
+            sf *= (_dbm->getDBValue("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)) + 
+                    _dbm->getDBErrH("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)));
+            sf *= ( _dbm->getDBValue("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)) +
+                    _dbm->getDBErrH("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)));
+            sf *= ( _dbm->getDBValue("eleTrkSFDb", cand->eta(),100) +
+                    _dbm->getDBErrH("eleTrkSFDb", cand->eta(),100));
+            sf += 0.01; //1% for potential pu dependence
+            if(cand->pt()<20){ sf += 0.03;} //additionl 3% for low pt electrons
+        }
+        else if(var==-1){
+            sf *= (_dbm->getDBValue("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)) -
+                    _dbm->getDBErrL("eleIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)));
+            sf *= ( _dbm->getDBValue("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)) -
+                    _dbm->getDBErrL("eleIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta)));
+            sf *= ( _dbm->getDBValue("eleTrkSFDb", cand->eta(),100) -
+                    _dbm->getDBErrL("eleTrkSFDb", cand->eta(),100));
+            sf -= 0.01; //1% for potential pu dependence
+            if(cand->pt()<20){ sf -= 0.03;} //additionl 3% for low pt electrons
+        }
+    } 
+    //muons
+    if(std::abs(flavor) == 13){
+        sf *= _dbm->getDBValue("muIdSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+        sf *= _dbm->getDBValue("muDxyzSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+        sf *= _dbm->getDBValue("muSIPSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+        sf *= _dbm->getDBValue("muIsoSFDb", std::min(cand->pt(), maxPt), std::min((std::abs(cand->eta())),maxEta));
+        sf *= _dbm->getDBValue("muTrkSFDb", cand->eta());
+        sf += var*0.03;
+    
     }
        
     if(sf==0){cout << "Warning! lepton scale factor is 0, check pt and eta for db lookup" << endl;

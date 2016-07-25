@@ -384,6 +384,7 @@ void SUSY3L::initialize(){
     //_dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
     _dbm->loadDb("eleIdSFDb","db2016/scaleFactors.root","GsfElectronToTightID2D3D");
     _dbm->loadDb("eleIsoSFDb","db2016/scaleFactors.root","MVATightElectronToMultiIsoM");
+    _dbm->loadDb("eleTrkSFDb","db2016/egammaEffi.root","EGamma_SF2D");
     //muons
     _dbm->loadDb("muIdSFDb","db2016/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0");
     _dbm->loadDb("muDxyzSFDb","db2016/TnP_MuonID_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
@@ -590,18 +591,15 @@ void SUSY3L::run(){
     
     //lepton scale factors
     if(!_vc->get("isData") && !_closure ){
-        //fullSim scale factors, flat uncertainty added in syst() function
-	    _weight*=_susyMod->applyLepSfRA7(_tightLepsPtCutMllCut);
-        //fastSim scale factors on top of full sim SF
-        //TODO: add when available
-        //if(_fastSim) {
-        //    _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut, _vc->get("nTrueInt"));
-        //    // //uncertainties
-	    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
-	    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, 1);
-	    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
-	    //      _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, -1);
-        //}
+        if(!isInUncProc())  {
+	        _weight *= _susyMod->applyLepSfRA7(_tightLepsPtCutMllCut, 0);
+        }
+        else if(isInUncProc() && getUncName()=="LepEff" && getUncDir()==SystUtils::kUp )
+	        _weight *= _susyMod->applyLepSfRA7(_tightLepsPtCutMllCut, 1);
+        else if(isInUncProc() && getUncName()=="LepEff" && getUncDir()==SystUtils::kDown )
+	        _weight *= _susyMod->applyLepSfRA7(_tightLepsPtCutMllCut, -1);
+        else //other syst. variations
+	        _weight *= _susyMod->applyLepSfRA7(_tightLepsPtCutMllCut, 0);
     } 
     counter("lepton SF");
     
@@ -3075,7 +3073,6 @@ void SUSY3L::systUnc(){
 
     //uncertanties
     float lumiUnc           = 0.062;
-    float lepUnc            = 0.09;
     float rareUnc           = 0.50;
     float xgUnc             = 0.50;
     float wzNormUnc         = 0.15;
@@ -3115,9 +3112,6 @@ void SUSY3L::systUnc(){
         //lumi
         if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lumiUnc;}
 	    if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kDown == getUncDir() ){_weight *= 1-lumiUnc;}
-	    //lepton efficiency
-        if((isInUncProc() &&  getUncName()=="LepEff") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lepUnc;}
-	    if((isInUncProc() &&  getUncName()=="LepEff") && SystUtils::kDown == getUncDir() ){_weight *= 1-lepUnc;}
     }
 
     //rare processes

@@ -1,5 +1,23 @@
 import os, sys, math,subprocess
 
+def retrieveSamples(inputFile):
+
+    samples=[]
+
+    ifile=open(inputFile,'r')
+    lines=ifile.read().splitlines()
+
+    for line in lines:
+        
+        if 'selected'in line or 'denominator' in line:
+            sample=line.split()[1]
+            if sample not in samples:
+                samples.append(line.split()[1])
+
+    #print "samples ", samples
+    return samples
+
+
 def retrieveCategs(inputFile):
 
     ifile=open(inputFile,'r')
@@ -14,7 +32,7 @@ def retrieveCategs(inputFile):
     return categs
 
 
-def retrieveYields(inputFile):
+def retrieveYields(inputFile, samples):
 
     ifile=open(inputFile,'r')
     lines=ifile.read().splitlines()
@@ -24,7 +42,7 @@ def retrieveYields(inputFile):
     totNGen={}
     totUnc={}
     
-    samples=[]
+    #samples=[]
 
     init=False
     initSel=False
@@ -33,27 +51,31 @@ def retrieveYields(inputFile):
     for line in lines:
         
         if 'categ\t' in line and not 'endcateg' in line:
+            init=False
             curCateg=line[6:]
             goodLines[ curCateg ]={}
+            for sample in samples:
+                goodLines[ curCateg ][sample]=""
+
             if 'global_' not in curCateg: #just for initialization
                 totYield[curCateg]={}
                 totNGen[curCateg]={}
                 totUnc[curCateg]={}
                 
-                if init:
-                    for sample in samples:
-                        totYield[curCateg][sample]=0
-                        totNGen[curCateg][sample]=0
-                        totUnc[curCateg][sample]=0
+                #if init:
+                for sample in samples:
+                    totYield[curCateg][sample]=0
+                    totNGen[curCateg][sample]=0
+                    totUnc[curCateg][sample]=0
 
         if 'selected'in line or 'denominator' in line: 
             sample=line.split()[1]
             
-            if not init:
-                samples.append(sample)
-                totYield[curCateg][sample]=0
-                totNGen[curCateg][sample]=0
-                totUnc[curCateg][sample]=0
+            #if not init:
+            #    #samples.append(sample)
+            #    totYield[curCateg][sample]=0
+            #    totNGen[curCateg][sample]=0
+            #    totUnc[curCateg][sample]=0
 
         if 'selected' in line or 'denominator' in line:
             sample=line.split()[1]
@@ -74,12 +96,24 @@ def retrieveYields(inputFile):
                         totUnc[redCateg][sample]   += float(line.split()[4])*float(line.split()[4])
 
             elif 'global_' in curCateg:
+                #print line, goodLines[ curCateg ].keys(), curCateg
                 if sample in goodLines[ curCateg ].keys(): 
+                    #print "---> pass"
                     goodLines[ curCateg ][sample]=line
 
 
         if 'endcateg' in line and not init:
             init=True
+
+    #addition of empyt categs
+    for k in goodLines.keys():
+        for s in samples:
+            if s not in goodLines[k].keys():
+                print "====>>> ", k, s
+                goodLines[k][s]='\tselected\t'+s+'\t0\t0\t0'
+            else:
+                if goodLines[k][s]=="":
+                    goodLines[k][s]='\tselected\t'+s+'\t0\t0\t0'
 
     for i in totYield.keys():
         for j in totYield[i].keys():
@@ -90,8 +124,11 @@ def retrieveYields(inputFile):
 
 def mergeYields(mainFile, addFile,outName):
 
-    mainLines, mainYields, mainNGen, mainUnc=retrieveYields(mainFile)
-    addLines,  addYields,  addNGen,  addUnc=retrieveYields(addFile)
+    mainSamples=retrieveSamples(mainFile)
+    addSamples=retrieveSamples(addFile)
+
+    mainLines, mainYields, mainNGen, mainUnc=retrieveYields(mainFile, mainSamples)
+    addLines,  addYields,  addNGen,  addUnc=retrieveYields(addFile, addSamples)
 
     mainCategs=retrieveCategs(mainFile)
     addCategs=retrieveCategs(addFile)
