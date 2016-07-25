@@ -14,8 +14,6 @@ void susy3l_data() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    //string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    //string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
@@ -293,7 +291,7 @@ void susy3l_data() {
     //===============================================================
     // SDYJetsM50_HT600toInf_PU_S14_POSTLS170_skimamples **************************  samples
     //if( md.isInitStatus() ) {
-
+/*
     //rare
     md.anConf.addSample( "GGHZZ4L"                              ,  "rare"        , kMagenta-7, scale    );
     md.anConf.addSample( "VHToNonbb"                            ,  "rare"        , kMagenta-7, scale   );
@@ -304,10 +302,10 @@ void susy3l_data() {
     md.anConf.addSample( "ZZZ"                                  ,  "rare"        , kMagenta-7, scale    );
     md.anConf.addSample( "TTTT"                                 ,  "rare"        , kMagenta-7, scale    );
     md.anConf.addSample( "tZq_ll"                               ,  "rare"        , kMagenta-7, scale    );
-
+*/
     //WZ
     md.anConf.addSample( "WZTo3LNu"                             ,  "WZ"          , kOrange, scale       );
-
+/*
     //X+gamma
     md.anConf.addSample( "TGJets"                               ,  "X+#gamma"    , kViolet+2, scale     );
     md.anConf.addSample( "TTGJets"                              ,  "X+#gamma"    , kViolet+2, scale    );
@@ -346,22 +344,6 @@ void susy3l_data() {
     //md.anConf.addSample( "WWTo2L2Nu"                            ,  "non-prompt"       , 18      );
     //md.anConf.addSample( "ZZTo2L2Nu"                            ,  "non-prompt"       , 18      );
 
-
-
-
-
-    //non-prompt
-/*    md.anConf.addSample( "TTJets"                               ,  "TT"       , kBlue-10            );
-    md.anConf.addSample( "DYJetsToLL_M10to50"                   ,  "DY"       , kBlue-7            );
-    md.anConf.addSample( "DYJetsToLL_M50"                       ,  "DY"       , kBlue-7            );
-    md.anConf.addSample( "TToLeptons_sch"                       ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TBar_tWch"                            ,  "single top"       , kCyan      );
-    md.anConf.addSample( "T_tWch"                               ,  "single top"       , kCyan      );
-    md.anConf.addSample( "WJetsToLNu"                           ,  "WJets"       , 18      );
-    md.anConf.addSample( "WWTo2L2Nu"                            ,  "other"       , kBlue+3      );
-    md.anConf.addSample( "ZZTo2L2Nu"                            ,  "other"       , kBlue+3      );
 */
 
     //non-prompt predicted
@@ -373,7 +355,7 @@ void susy3l_data() {
     //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "non-prompt"          , 18, scale    );
     //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "non-prompt"          , 18, scale    );
      //12.9/fb production by Mattieu
-    md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"     , "non-prompt"          , 18, scale    );
+/*    md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"     , "non-prompt"          , 18, scale    );
@@ -381,17 +363,18 @@ void susy3l_data() {
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"   , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"   , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"   , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"    , "non-prompt"          , 18, scale    );
+*/  //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"    , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
  
+ /*
     //signal
     if(sigs=="t"){
     md.anConf.addSample( "T1tttt_mGo1200_mChi800"                       ,  "T1tttt (1200) x10 sig"     , kBlue-3, 10 );
@@ -434,7 +417,7 @@ void susy3l_data() {
     md.anConf.addSample( "MuonEG_Run2016DPromptReco_v2_runs_276283_276384"          , "data"          , kBlack    );
     md.anConf.addSample( "MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"         , "data"          , kBlack    );
     }
-
+*/
 
     //===============================================================
 
@@ -473,7 +456,7 @@ void susy3l_data() {
              mcOnly,cmsPrel, uncDet, closure, nlo_vs_lo, fixLeg);
     md.prepareDisplay();
     
-//    md.doPlot();
+    md.doPlot();
     // md.doStatisticsPlot();
     //md.getStatistics("global_OffZSR001", true, false);
        
