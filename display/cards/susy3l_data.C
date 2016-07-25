@@ -101,8 +101,8 @@ void susy3l_data() {
       md.setObservables("HT" + region);
         if(region=="WZCR"){int binning=50; double rangeX[2]={0,200};bool logYScale=false;}
         else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,300};bool logYScale=false;}
-        else if(region=="OffZBaseline"){int binning=60; double rangeX[2]={60,720};bool logYScale=true;}
-        else{int binning=60; double rangeX[2]={60,960};}
+        else if(region=="OffZBaseline"){int binning=50; double rangeX[2]={50,750};bool logYScale=true;}
+        else{int binning=50; double rangeX[2]={50,950};}
         //bool logYScale=true;
     }
     if(obs == "mt"){
@@ -114,29 +114,26 @@ void susy3l_data() {
     }
     if(obs == "pt1"){
         md.setObservables("pt_1st_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
-        else int binning=20;
         double rangeX[2]={0,260};
-        if(region=="WZCR"){bool logYScale=false;}
-        if(region=="FakeCR"){int binning=25; double rangeX[2]={0,150};bool logYScale=false;}
+        if(region=="WZCR"){int binning = 10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=25; double rangeX[2]={0,150};bool logYScale=false;}
+        else int binning=20;
         //bool logYScale=true;
     }
     if(obs == "pt2"){
         md.setObservables("pt_2nd_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
-        else int binning=20;
         double rangeX[2]={0,160};
-        if(region=="WZCR"){bool logYScale=false;}
-        if(region=="FakeCR"){int binning=20; double rangeX[2]={0,120};bool logYScale=false;}
+        if(region=="WZCR"){int binning=10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=20; double rangeX[2]={0,120};bool logYScale=false;}
+        else int binning=20;
         //bool logYScale=true;
     }   
     if(obs == "pt3"){
         md.setObservables("pt_3rd_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
-        else int binning=20;
         double rangeX[2]={0,100};
-        if(region=="WZCR" ){bool logYScale=false;}
-        if(region=="FakeCR"){int binning=20; double rangeX[2]={0,80};bool logYScale=false;}
+        if(region=="WZCR" ){int binning=10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=20; double rangeX[2]={0,80};bool logYScale=false;}
+        else int binning=20;
         //bool logYScale=true;
     }
     if(obs == "ftype"){
@@ -150,8 +147,6 @@ void susy3l_data() {
         md.setObservables("flavor" + region);
         int binning=1;
         double rangeX[2]={0,5};
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,4};}
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
         //bool logYScale=false;
     }
     if(obs == "srs"){
@@ -312,14 +307,6 @@ void susy3l_data() {
     md.anConf.addSample( "WGToLNuG"                             ,  "X+#gamma"    , kViolet+2, scale      );
     md.anConf.addSample( "ZGTo2LG"                              ,  "X+#gamma"    , kViolet+2, scale     );
 
-    //md.anConf.addSample( "TGJets"                               ,  "TG"    , kMagenta     );
-    //md.anConf.addSample( "WGToLNuG"                             ,  "WG"    , kMagenta+2     );
-    //md.anConf.addSample( "ZGTo2LG"                              ,  "ZG"    , kBlue-10     );
-    //md.anConf.addSample( "TTGJets"                              ,  "TTG"   , kBlue     );
-
-
-
-
     //TTZ/H
     //md.anConf.addSample( "TTZToLLNuNu"                          ,  "t#bar{t}Z/H" , kGreen-6, scale      );
     md.anConf.addSample( "TTZ_LO"                               ,  "t#bar{t}Z/H" , kGreen-6, scale      );
@@ -332,42 +319,36 @@ void susy3l_data() {
 
 
     //non-prompt
-    //md.anConf.addSample( "TTJets"                               ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "DYJetsToLL_M10to50"                   ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "DYJetsToLL_M50"                       ,  "non-prompt"       , 18            );
-    //md.anConf.addSample( "TToLeptons_sch"                       ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "TBar_tWch"                            ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "T_tWch"                               ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "WJetsToLNu"                           ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "WWTo2L2Nu"                            ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "ZZTo2L2Nu"                            ,  "non-prompt"       , 18      );
+    //md.anConf.addSample( "TBar_tWch"                            ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "T_tWch"                               ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "WJetsToLNu"                           ,  "non-prompt"       , 18            );
 
 
 
     //non-prompt predicted
-    //4/fb production by Marco
-    //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_274443"    , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_274443"        , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_274444_275125"      , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "non-prompt"          , 18, scale    );
-     //12.9/fb production by Mattieu
+    //12.9/fb production by Mattieu
+        //first 4.3/fb
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"     , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"   , "non-prompt"          , 18, scale    );
+    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "non-prompt"          , 18, scale    );
+        //topup
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"     , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"      , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"     , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"   , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"    , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"   , "non-prompt"          , 18, scale    );
-    md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "non-prompt"          , 18, scale    );
     md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
@@ -398,19 +379,21 @@ void susy3l_data() {
     //data
     if(data){
     //12.9/fb 
+        //first 4.3/fb
     md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "data"          , kBlack    );
+    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"     , "data"          , kBlack    );
+    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"         , "data"          , kBlack    );
+        //topup
     md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "data"          , kBlack    );
     md.anConf.addSample( "DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "data"          , kBlack    );
     md.anConf.addSample( "DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "data"          , kBlack    );
     md.anConf.addSample( "DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"        , "data"          , kBlack    );
     md.anConf.addSample( "DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "data"          , kBlack    );
-    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"     , "data"          , kBlack    );
     md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"     , "data"          , kBlack    );
     md.anConf.addSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"     , "data"          , kBlack    );
     md.anConf.addSample( "DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"     , "data"          , kBlack    );
     md.anConf.addSample( "DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"      , "data"          , kBlack    );
     md.anConf.addSample( "DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"     , "data"          , kBlack    );
-    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"         , "data"          , kBlack    );
     md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"         , "data"          , kBlack    );
     md.anConf.addSample( "MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"         , "data"          , kBlack    );
     md.anConf.addSample( "MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"         , "data"          , kBlack    );
