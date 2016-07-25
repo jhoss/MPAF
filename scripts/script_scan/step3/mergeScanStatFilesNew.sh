@@ -2,7 +2,7 @@
 
 AN=$1
 
-mainFile=${MPAF}/workdir/stats/${AN}/merged_12_Bkg.dat
+mainFile=${MPAF}/workdir/stats/${AN}/merged_12fb_Bkg.dat
 
 ## first merge backgrounds
 python ${MPAF}/scripts/script_scan/step3/mergeBkgs.py ${mainFile} ${MPAF}/workdir/stats/${AN}/3l_v2_scanBkg_

@@ -58,7 +58,7 @@ def retrieveYields(inputFile):
         if 'selected' in line:
             sample=line.split()[1]
             
-            if 'global_' in curCateg and 'BR' not in curCateg and 'Fake' not in curCateg and 'mId' not in curCateg and "WZCR" not in curCateg:
+            if 'global_' in curCateg and 'BR' not in curCateg and 'Fake' not in curCateg and 'mId' not in curCateg and "WZCR" not in curCateg and "Baseline" not in curCateg:
                 goodLines[ curCateg ][sample]=line
                 if 'Unc' not in curCateg:
                     if sample in totYield['global'].keys():
