@@ -1678,22 +1678,26 @@ void SUSY3L::advancedSelection(int WF){
 
     //extra cut for onZ to remove DY
     if(_isOnZ && _met->pt() < 70 && _HT < 400 && _nBJets<2) return;
- 
+     
     /*long long int evt=_vc->get("evt");
     if(_vc->get("isData") == 1 && _nJets>5 && !_isFake && !_isOnZ){
         cout << "___________________________________________" << endl;
         cout << _sampleName << endl;
         cout << _vc->get("run") << " " << _vc->get("lumi") << " " << evt << " " << _nMus << " " << _nEls << " " << _nTaus << " " << _nJets << " " << _nBJets <<  " " << _met->pt() << " " << _HT << " "  << _isOnZ  << " " << _isFake << endl;
-        for(size_t il=0;il<_vc->get("nJet");il++) {
-            cout << "nJet " << il << " pt: " << _vc->get("Jet_pt", il)  << " eta: " << _vc->get("Jet_eta", il) << " phi: " << _vc->get("Jet_phi", il) << " puId: " << _vc->get("Jet_puId", il) << endl;
-        }
-        for(size_t il=0;il<_vc->get("nDiscJet");il++) {
-            cout << "nDiscJet " << il << " pt: " << _vc->get("DiscJet_pt", il)  << " eta: " << _vc->get("DiscJet_eta", il) << " phi: " << _vc->get("DiscJet_phi", il) << " puId: " << _vc->get("DiscJet_puId", il) << endl;
-        }
+        //for(size_t il=0;il<_vc->get("nJet");il++) {
+        //    cout << "nJet " << il << " pt: " << _vc->get("Jet_pt", il)  << " eta: " << _vc->get("Jet_eta", il) << " phi: " << _vc->get("Jet_phi", il) << " puId: " << _vc->get("Jet_puId", il) << endl;
+        //}
+        //for(size_t il=0;il<_vc->get("nDiscJet");il++) {
+        //    cout << "nDiscJet " << il << " pt: " << _vc->get("DiscJet_pt", il)  << " eta: " << _vc->get("DiscJet_eta", il) << " phi: " << _vc->get("DiscJet_phi", il) << " puId: " << _vc->get("DiscJet_puId", il) << endl;
+        //}
         cout << "selected jets: " << endl;
         for(size_t il=0;il<_jets.size();il++) {
             cout << il << " pt: " << _jets[il]->pt() << " " << "eta: " << _jets[il]->eta() << " "<< "phi: " << _jets[il]->phi() <<  endl;
-        } 
+        }
+        cout << "tight leptons: " << endl;
+        for(size_t il=0;il<_tightLepsPtCutMllCut.size();il++) {
+            cout << il << " pt: " << _tightLepsPtCutMllCut[il]->pt() << " eta: " << _tightLepsPtCutMllCut[il]->eta() << " phi: " << _tightLepsPtCutMllCut[il]->phi() <<" flavor: " << _tightLepsPtCutMllCut[il]->pdgId() <<" sip3d: " << _vc->get("LepGood_sip3d", _tightLepsPtCutMllCutIdx[il]) << " miniIso: " << _vc->get("LepGood_miniRelIso", _tightLepsPtCutMllCutIdx[il]) << " ptrel: " << _vc->get("LepGood_jetPtRelv2", _tightLepsPtCutMllCutIdx[il]) << " ptratio: " << _vc->get("LepGood_jetPtRatiov2", _tightLepsPtCutMllCutIdx[il]) <<endl;
+        }
     }
     if((_vc->get("isData") == 1 && _nJets<6 && !_isFake) || _isOnZ) return;
     */
