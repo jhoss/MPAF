@@ -22,13 +22,13 @@ for reg in ${REG[@]}; do
 
         variable=$var
 
-        cp cards/susy3l_data.C cards/tmpFiles/susy3l_data_${var}_${reg}.C
-        sed -i 's|VARIABLE|'$variable'|' cards/tmpFiles/susy3l_data_${var}_${reg}.C
-        sed -i 's|REGION|'$region'|' cards/tmpFiles/susy3l_data_${var}_${reg}.C
+        cp cards/susy3l_appl.C cards/tmpFiles/susy3l_appl_${var}_${reg}.C
+        sed -i 's|VARIABLE|'$variable'|' cards/tmpFiles/susy3l_appl_${var}_${reg}.C
+        sed -i 's|REGION|'$region'|' cards/tmpFiles/susy3l_appl_${var}_${reg}.C
 	
-        root -l -b cards/tmpFiles/susy3l_data_${var}_${reg}.C
+        root -l -b cards/tmpFiles/susy3l_appl_${var}_${reg}.C
 
-	#qsub -q long.q -N MPAFPlot_${var}_${reg} -o $MPAF/workdir/logs/SUSY3l/susy3l_data_${var}_${reg}.out -e $MPAF/workdir/logs/SUSY3l/susy3l_data_${var}_${reg}.err $MPAF/scripts/submit_display.sh cards/tmpFiles/susy3l_data_${var}_${reg}.C
+	#qsub -q long.q -N MPAFPlot_${var}_${reg} -o $MPAF/workdir/logs/SUSY3l/susy3l_appl_${var}_${reg}.out -e $MPAF/workdir/logs/SUSY3l/susy3l_appl_${var}_${reg}.err $MPAF/scripts/submit_display.sh cards/tmpFiles/susy3l_appl_${var}_${reg}.C
 
 
 	#qsub

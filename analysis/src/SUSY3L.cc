@@ -419,7 +419,7 @@ void SUSY3L::initialize(){
         addManualSystSource("pu",SystUtils::kNone); 
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
-        //addManualSystSource("fs_lep",SystUtils::kNone);
+        addManualSystSource("fs_lep",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
 	    addManualSystSource("met_fast",SystUtils::kNone);
@@ -602,6 +602,16 @@ void SUSY3L::run(){
 	        _weight *= _susyMod->applyLepSfRA7(_tightLepsPtCutMllCut, 0);
     } 
     counter("lepton SF");
+   
+    //fastSim lepton scale factors
+    //if(_fastSim){   
+    //    _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut, _vc->get("nTrueInt"));
+    //    //uncertainties
+    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
+    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, 1);
+    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
+    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, -1);
+    //}
     
     //HLT efficiency correction
     if(!_vc->get("isData") && !_closure ) {

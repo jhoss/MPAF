@@ -35,10 +35,10 @@ void susy3l_data() {
     bool data = true;
     bool manual =true;
     if(!manual) string region = "REGION";
-    else string region = "OnZBaseline";
+    else string region = "OffZBaseline";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
-    else{string obs = "srs";}
+    else{string obs = "nbjets";}
         
     float lumi=12900; //pb-1 19470
     float energy=13; //TeV
@@ -319,6 +319,7 @@ void susy3l_data() {
 
 
     //non-prompt
+    //md.anConf.addSample( "TTJets"                               ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
@@ -329,6 +330,20 @@ void susy3l_data() {
     //md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "non-prompt"       , 18            );
     //md.anConf.addSample( "WJetsToLNu"                           ,  "non-prompt"       , 18            );
+
+    //non-prompt predicted from MC
+    //md.anConf.addSample( "Fake:TTJets"                               ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:DYJetsToLL_M10to50"                   ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:DYJetsToLL_M50"                       ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TBar_tWch"                            ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:T_tWch"                               ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TToLeptons_tch_powheg"                ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:WJetsToLNu"                           ,  "non-prompt"       , 18            );
+
 
 
 

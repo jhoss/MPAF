@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-//void susy3l_data_VARIABLE_REGION() {
-void susy3l_appl() {
+void susy3l_appl_VARIABLE_REGION() {
+//void susy3l_appl() {
     md.refresh();
 
 
@@ -14,8 +14,9 @@ void susy3l_appl() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    string fileName="merged_v2_4fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="merged_v2_4fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+
 
     string hName="";
 
@@ -23,7 +24,7 @@ void susy3l_appl() {
     bool closure = false;
     bool nlo_vs_lo = false;
     bool fixLeg = true;
-    bool printTable = true;
+    bool printTable = false;
 
     //if(md.isInitStatus()) {
     md.anConf.configureNames( dir, fileName, fileList );//, hName );
@@ -32,14 +33,14 @@ void susy3l_appl() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =true;
+    bool manual =false;
     if(!manual) string region = "REGION";
-    else string region = "OffZBaseline_Fake";
+    else string region = "OffZBaseline";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
-    else{string obs = "srs";}
+    else{string obs = "njets";}
         
-    float lumi=4300; //pb-1 19470
+    float lumi=12900; //pb-1 19470
     float energy=13; //TeV
 
     //if(lumi>804 && data && !(region=="WZCR" || region=="FakeCR")){
@@ -76,59 +77,63 @@ void susy3l_appl() {
     if(obs == "njets"){
         md.setObservables("NJets" + region);
         int binning=1;
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
+        if(region=="WZCR"){double rangeX[2]={0,2};bool logYScale=false;}
+        else if(region == "FakeCR"){double rangeX[2]={1,3};bool logYScale=false;}
         else{double rangeX[2]={2,10};}
         //bool logYScale=true;
     }
     if(obs == "nbjets"){
         md.setObservables("NBJets" + region);
         int binning=1;
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,5};bool logYScale=false;}
+        if(region=="WZCR" ){double rangeX[2]={0,1};bool logYScale=false;}
+        else if(region == "FakeCR"){double rangeX[2]={1,2};bool logYScale=false;}
         else{double rangeX[2]={0,5};}
         //bool logYScale=true;
     }
     if(obs == "met"){
         md.setObservables("MET" + region);
-        if(region=="WZCR" || region == "FakeCR"){int binning=10; double rangeX[2]={0,120};bool logYScale=false;}
+        if(region=="WZCR" ){int binning=10; double rangeX[2]={30,100};bool logYScale=false;}
+        else if(region == "FakeCR"){int binning=10; double rangeX[2]={30,50};bool logYScale=false;}
         else{int binning=50; double rangeX[2]={50,500};}
         //bool logYScale=true;
     }
     if(obs == "ht"){
       md.setObservables("HT" + region);
         if(region=="WZCR"){int binning=50; double rangeX[2]={0,200};bool logYScale=false;}
-        else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,400};bool logYScale=false;}
-        else{int binning=60; double rangeX[2]={60,960};}
+        else if(region=="FakeCR"){int binning=50; double rangeX[2]={0,300};bool logYScale=false;}
+        else if(region=="OffZBaseline"){int binning=50; double rangeX[2]={50,750};bool logYScale=true;}
+        else{int binning=50; double rangeX[2]={50,950};}
         //bool logYScale=true;
     }
     if(obs == "mt"){
         if(region!="WZCR"){gROOT->ProcessLine(".q");}
         md.setObservables("MT" + region);
         int binning=10;
-        double rangeX[2]={0,200};
+        double rangeX[2]={50,170};
         bool logYScale=false;
     }
     if(obs == "pt1"){
         md.setObservables("pt_1st_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
+        double rangeX[2]={0,260};
+        if(region=="WZCR"){int binning = 10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=25; double rangeX[2]={0,150};bool logYScale=false;}
         else int binning=20;
-        double rangeX[2]={0,200};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "pt2"){
         md.setObservables("pt_2nd_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
+        double rangeX[2]={0,160};
+        if(region=="WZCR"){int binning=10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=20; double rangeX[2]={0,120};bool logYScale=false;}
         else int binning=20;
-        double rangeX[2]={0,150};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
         //bool logYScale=true;
     }   
     if(obs == "pt3"){
         md.setObservables("pt_3rd_lepton" + region);
-        if(region=="WZCR"){int binning=10;}
-        else int binning=20;
         double rangeX[2]={0,100};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        if(region=="WZCR" ){int binning=10; bool logYScale=false;}
+        else if(region=="FakeCR"){int binning=20; double rangeX[2]={0,80};bool logYScale=false;}
+        else int binning=20;
         //bool logYScale=true;
     }
     if(obs == "ftype"){
@@ -138,14 +143,14 @@ void susy3l_appl() {
         //bool logYScale=true;
     }
     if(obs == "flavor"){
+        if(region=="WZCR" || region=="FakeCR"){gROOT->ProcessLine(".q");}
         md.setObservables("flavor" + region);
         int binning=1;
         double rangeX[2]={0,5};
-        if(region=="WZCR" || region == "FakeCR"){double rangeX[2]={0,4};}
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
         //bool logYScale=false;
     }
     if(obs == "srs"){
+        if(region=="WZCR" || region=="FakeCR"){gROOT->ProcessLine(".q");}
         md.setObservables("SRS" + region);
         int binning=1;
         if(region == "OnZBaseline"){double rangeX[2]={1,18};}
@@ -155,22 +160,22 @@ void susy3l_appl() {
     if(obs == "mu_multi"){
         md.setObservables("mu_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={0,6};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,5};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "el_multi"){
         md.setObservables("el_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={0,6};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={0,5};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={0,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "lep_multi"){
         md.setObservables("lep_multiplicity" + region);
         int binning=1;
-        double rangeX[2]={3,7};
-        if(region=="WZCR" || region == "FakeCR"){bool logYScale=false;}
+        double rangeX[2]={3,6};
+        if(region=="WZCR" || region=="FakeCR"){double rangeX[2]={3,4};bool logYScale=false;}
         //bool logYScale=true;
     }
     if(obs == "nfo"){
@@ -283,87 +288,72 @@ void susy3l_appl() {
     //if( md.isInitStatus() ) {
 
     //rare
-    md.anConf.addSample( "GGHZZ4L"                              ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "VHToNonbb"                            ,  "rare"        , kMagenta-7, scale   );
-    md.anConf.addSample( "ZZTo4L"                               ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "WWW"                                  ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "WWZ"                                  ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "WZZ"                                  ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "ZZZ"                                  ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "TTTT"                                 ,  "rare"        , kMagenta-7, scale    );
-    md.anConf.addSample( "tZq_ll"                               ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:GGHZZ4L"                              ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:VHToNonbb"                            ,  "rare"        , kMagenta-7, scale   );
+    md.anConf.addSample( "Fake:ZZTo4L"                               ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:WWW"                                  ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:WWZ"                                  ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:WZZ"                                  ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:ZZZ"                                  ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:TTTT"                                 ,  "rare"        , kMagenta-7, scale    );
+    md.anConf.addSample( "Fake:tZq_ll"                               ,  "rare"        , kMagenta-7, scale    );
 
     //WZ
-    md.anConf.addSample( "WZTo3LNu"                             ,  "WZ"          , kOrange, scale       );
+    md.anConf.addSample( "Fake:WZTo3LNu"                             ,  "WZ"          , kOrange, scale       );
 
     //X+gamma
-    md.anConf.addSample( "TGJets"                               ,  "X+#gamma"    , kViolet+2, scale     );
-    md.anConf.addSample( "TTGJets"                              ,  "X+#gamma"    , kViolet+2, scale    );
-    md.anConf.addSample( "WGToLNuG"                             ,  "X+#gamma"    , kViolet+2, scale      );
-    md.anConf.addSample( "ZGTo2LG"                              ,  "X+#gamma"    , kViolet+2, scale     );
-
-    //md.anConf.addSample( "TGJets"                               ,  "TG"    , kMagenta     );
-    //md.anConf.addSample( "WGToLNuG"                             ,  "WG"    , kMagenta+2     );
-    //md.anConf.addSample( "ZGTo2LG"                              ,  "ZG"    , kBlue-10     );
-    //md.anConf.addSample( "TTGJets"                              ,  "TTG"   , kBlue     );
-
-
-
+    md.anConf.addSample( "Fake:TGJets"                               ,  "X+#gamma"    , kViolet+2, scale     );
+    md.anConf.addSample( "Fake:TTGJets"                              ,  "X+#gamma"    , kViolet+2, scale    );
+    md.anConf.addSample( "Fake:WGToLNuG"                             ,  "X+#gamma"    , kViolet+2, scale      );
+    md.anConf.addSample( "Fake:ZGTo2LG"                              ,  "X+#gamma"    , kViolet+2, scale     );
 
     //TTZ/H
-    //md.anConf.addSample( "TTZToLLNuNu"                          ,  "t#bar{t}Z/H" , kGreen-6, scale      );
-    md.anConf.addSample( "TTZ_LO"                               ,  "t#bar{t}Z/H" , kGreen-6, scale      );
-    md.anConf.addSample( "TTHnobb_pow"                          ,  "t#bar{t}Z/H" , kGreen-6, scale      );
-    md.anConf.addSample( "TTLLJets_m1to10"                      ,  "t#bar{t}Z/H" , kGreen-6, scale      );
+    md.anConf.addSample( "Fake:TTZToLLNuNu"                          ,  "t#bar{t}Z/H" , kGreen-6, scale      );
+    //md.anConf.addSample( "Fake:TTZ_LO"                               ,  "t#bar{t}Z/H" , kGreen-6, scale      );
+    md.anConf.addSample( "Fake:TTHnobb_pow"                          ,  "t#bar{t}Z/H" , kGreen-6, scale      );
+    md.anConf.addSample( "Fake:TTLLJets_m1to10"                      ,  "t#bar{t}Z/H" , kGreen-6, scale      );
     
     //TTW
-    //md.anConf.addSample( "TTWToLNu"                             ,  "t#bar{t}W"   , kGreen+3, scale      );
-    md.anConf.addSample( "TTW_LO"                               ,  "t#bar{t}W"   , kGreen+3, scale      );
+    md.anConf.addSample( "Fake:TTWToLNu"                             ,  "t#bar{t}W"   , kGreen+3, scale      );
+    //md.anConf.addSample( "Fake:TTW_LO"                               ,  "t#bar{t}W"   , kGreen+3, scale      );
 
 
     //non-prompt
-    md.anConf.addSample( "TTJets"                               ,  "non-prompt"       , 18            );
-    md.anConf.addSample( "DYJetsToLL_M10to50"                   ,  "non-prompt"       , 18            );
-    md.anConf.addSample( "DYJetsToLL_M50"                       ,  "non-prompt"       , 18            );
-    //md.anConf.addSample( "TToLeptons_sch"                       ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18      );
-    md.anConf.addSample( "TBar_tWch"                            ,  "non-prompt"       , 18      );
-    md.anConf.addSample( "T_tWch"                               ,  "non-prompt"       , 18      );
-    md.anConf.addSample( "WJetsToLNu"                           ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "WWTo2L2Nu"                            ,  "non-prompt"       , 18      );
-    //md.anConf.addSample( "ZZTo2L2Nu"                            ,  "non-prompt"       , 18      );
-
-
-
-
-
-    //non-prompt
-/*    md.anConf.addSample( "TTJets"                               ,  "TT"       , kBlue-10            );
-    md.anConf.addSample( "DYJetsToLL_M10to50"                   ,  "DY"       , kBlue-7            );
-    md.anConf.addSample( "DYJetsToLL_M50"                       ,  "DY"       , kBlue-7            );
-    md.anConf.addSample( "TToLeptons_sch"                       ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TToLeptons_tch_powheg"                ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TBarToLeptons_tch_powheg"             ,  "single top"       , kCyan      );
-    md.anConf.addSample( "TBar_tWch"                            ,  "single top"       , kCyan      );
-    md.anConf.addSample( "T_tWch"                               ,  "single top"       , kCyan      );
-    md.anConf.addSample( "WJetsToLNu"                           ,  "WJets"       , 18      );
-    md.anConf.addSample( "WWTo2L2Nu"                            ,  "other"       , kBlue+3      );
-    md.anConf.addSample( "ZZTo2L2Nu"                            ,  "other"       , kBlue+3      );
-*/
+    //md.anConf.addSample( "Fake:TTJets"                               ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:DYJetsToLL_M10to50"                   ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:DYJetsToLL_M50"                       ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TBar_tWch"                            ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:T_tWch"                               ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TBarToLeptons_tch_powheg"             ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TToLeptons_tch_powheg"                ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:WJetsToLNu"                           ,  "non-prompt"       , 18            );
 
     //non-prompt predicted
-    //4/fb production by Marco
-    //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_274443"    , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_274443"        , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleEG_Run2016B_PromptReco_v2_runs_274444_275125"      , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:_Fake:MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "non-prompt"          , 18, scale    );
-     //4/fb production by Mattieu
-    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"    , "non-prompt"          , 18, scale    );
-    //md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"        , "non-prompt"          , 18, scale    );
+    //12.9/fb production by Mattieu
+        //first 4.3/fb
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"     , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "non-prompt"          , 18, scale    );
+    //    //topup
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"     , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"     , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"     , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"      , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"     , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"    , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"   , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"        , "non-prompt"          , 18, scale    );
+    //md.anConf.addSample( "data:Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "non-prompt"          , 18, scale    );
+ 
  
     //signal
     if(sigs=="t"){
@@ -387,19 +377,27 @@ void susy3l_appl() {
     
     //data
     if(data){
-    //4/fb production by Marco
-    //md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_274443"      , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_274443"    , "data"          , kBlack    );
-    //md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_274443"        , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_274444_275125"      , "data"          , kBlack    );
-    //md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_274444_275125"    , "data"          , kBlack    );
-    //md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_274444_275125"        , "data"          , kBlack    );
-    //4/fb production by Mattieu
-    md.anConf.addSample( "DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"      , "data"          , kBlack    );
-    md.anConf.addSample( "DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"    , "data"          , kBlack    );
-    md.anConf.addSample( "MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"        , "data"          , kBlack    );
-    
-    
+    //12.9/fb 
+        //first 4.3/fb
+    md.anConf.addSample( "Fake:DoubleEG_Run2016B_PromptReco_v2_runs_273150_275125"       , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_273150_275125"     , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016B_PromptReco_v2_runs_273150_275125"         , "data"          , kBlack    );
+        //topup
+    md.anConf.addSample( "Fake:DoubleEG_Run2016B_PromptReco_v2_runs_275126_275783"       , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleEG_Run2016C_PromptReco_v2_runs_271350_275783"       , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleEG_Run2016C_PromptReco_v2_runs_275784_276283"       , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleEG_Run2016DPromptReco_v2_runs_276283_276384"        , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleEG_Run2016D_PromptReco_v2_runs_276284_276811"       , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016B_PromptReco_v2_runs_275126_275783"     , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_271350_275783"     , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016C_PromptReco_v2_runs_275784_276283"     , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016DPromptReco_v2_runs_276283_276384"      , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:DoubleMuon_Run2016D_PromptReco_v2_runs_276284_276811"     , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016B_PromptReco_v2_runs_275126_275783"         , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016C_PromptReco_v2_runs_271350_275783"         , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016C_PromptReco_v2_runs_275784_276283"         , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016DPromptReco_v2_runs_276283_276384"          , "data"          , kBlack    );
+    md.anConf.addSample( "Fake:MuonEG_Run2016D_PromptReco_v2_runs_276284_276811"         , "data"          , kBlack    );
     }
 
 
@@ -442,6 +440,7 @@ void susy3l_appl() {
     
     md.doPlot();
     // md.doStatisticsPlot();
+    //md.getStatistics("global_OffZSR001", true, false);
        
     if(printTable){
     //print result table
@@ -450,18 +449,18 @@ void susy3l_appl() {
     for(int i=0;i<17;i++){
         string sr= "global_";
         sr += categs[i];
-        sr += "_Fake";
-        if(i==0) md.getStatistics(sr, true, true);
-        else md.getStatistics(sr, true, false);
+        //sr += "_Fake";
+        if(i==0) md.getStatistics(sr, false, true);
+        else md.getStatistics(sr, false, false);
     }
     cout << "______________________________________________" <<endl;
     cout << "Off-Z:" << endl;
     for(int i=0;i<15;i++){
         string sr= "global_";
         sr += categs[i+17];
-        sr += "_Fake";
-        if(i==0) md.getStatistics(sr, true, true);
-        else md.getStatistics(sr, true, false);
+        //sr += "_Fake";
+        if(i==0) md.getStatistics(sr, false, true);
+        else md.getStatistics(sr, false, false);
     }
     }
 
