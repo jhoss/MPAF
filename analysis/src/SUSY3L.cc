@@ -541,7 +541,7 @@ void SUSY3L::run(){
     //event filter
     if(!passNoiseFilters()) return;
     counter("JME filters");
-
+  
     //check HLT trigger decition, only let triggered events pass (no HLT info in fast sim)
     if(!_fastSim){
         if(!passHLTbit()) return;
@@ -552,10 +552,10 @@ void SUSY3L::run(){
     if(!collectKinematicObjects()) return;
     
     counter("lepton multiplicity");
- 
+   
     //event reweighting for systematic uncertainties 
     if(_runSystematics) systUnc();
-   
+  
     //event reweighting
     //btag-scale factors
     if(!_vc->get("isData") && !_closure ) {
@@ -574,10 +574,10 @@ void SUSY3L::run(){
 	        _weight *= _susyMod->bTagSF( _jets, _jetsIdx, _bJets, _bJetsIdx, 0, _fastSim, 0);
     }
     counter("b-tag SF");
-
+   
     //ISR variation for fastsim
     if(_fastSim){
-            //if(isInUncProc() && getUncName()=="ISR") 
+      //if(isInUncProc() && getUncName()=="ISR") 
         _susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, false, _weight );
         if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kUp ){
 	        //_susyMod->applyISRWeight(0, 1 , _weight); // up variation
@@ -627,7 +627,7 @@ void SUSY3L::run(){
         }
     }
     counter("HLT SF");
-
+    
     //end event reweighting
 
   
@@ -745,9 +745,13 @@ void SUSY3L::defineOutput(){
 
     vector<string> wfs({"OnZBaseline","OffZBaseline",
 	  "OnZBaseline_Fake", "OffZBaseline_Fake",
-	  "Fake","WZCR","FakeCR","WZCR_Fake", "FakeCR_Fake"});
+	  "WZCR","FakeCR","WZCR_Fake", "FakeCR_Fake"});
 
-    _hm->setRelevantWFs( "SRS" ,wfs);
+    vector<string> wfslite({"OnZBaseline","OffZBaseline",
+	  "OnZBaseline_Fake", "OffZBaseline_Fake",
+	  });
+
+    _hm->setRelevantWFs( "SRS" ,wfslite);
     _hm->setRelevantWFs( "HT" ,wfs);
     _hm->setRelevantWFs( "MET" ,wfs);
     _hm->setRelevantWFs( "NBJets" ,wfs);
@@ -756,7 +760,7 @@ void SUSY3L::defineOutput(){
     _hm->setRelevantWFs( "pt_1st_lepton" ,wfs);
     _hm->setRelevantWFs( "pt_2nd_lepton" ,wfs);
     _hm->setRelevantWFs( "pt_3rd_lepton" ,wfs);
-    _hm->setRelevantWFs( "flavor" ,wfs);
+    _hm->setRelevantWFs( "flavor" ,wfslite);
     _hm->setRelevantWFs( "el_multiplicity" ,wfs);
     _hm->setRelevantWFs( "mu_multiplicity" ,wfs);
     _hm->setRelevantWFs( "lep_multiplicity" ,wfs);
@@ -1678,22 +1682,22 @@ void SUSY3L::advancedSelection(int WF){
 
     //extra cut for onZ to remove DY
     if(_isOnZ && _met->pt() < 70 && _HT < 400 && _nBJets<2) return;
-     
+    
     /*long long int evt=_vc->get("evt");
     if(_vc->get("isData") == 1 && _nJets>5 && !_isFake && !_isOnZ){
         cout << "___________________________________________" << endl;
         cout << _sampleName << endl;
         cout << _vc->get("run") << " " << _vc->get("lumi") << " " << evt << " " << _nMus << " " << _nEls << " " << _nTaus << " " << _nJets << " " << _nBJets <<  " " << _met->pt() << " " << _HT << " "  << _isOnZ  << " " << _isFake << endl;
-        //for(size_t il=0;il<_vc->get("nJet");il++) {
-        //    cout << "nJet " << il << " pt: " << _vc->get("Jet_pt", il)  << " eta: " << _vc->get("Jet_eta", il) << " phi: " << _vc->get("Jet_phi", il) << " puId: " << _vc->get("Jet_puId", il) << endl;
-        //}
-        //for(size_t il=0;il<_vc->get("nDiscJet");il++) {
-        //    cout << "nDiscJet " << il << " pt: " << _vc->get("DiscJet_pt", il)  << " eta: " << _vc->get("DiscJet_eta", il) << " phi: " << _vc->get("DiscJet_phi", il) << " puId: " << _vc->get("DiscJet_puId", il) << endl;
-        //}
+        for(size_t il=0;il<_vc->get("nJet");il++) {
+            cout << "nJet " << il << " pt: " << _vc->get("Jet_pt", il)  << " eta: " << _vc->get("Jet_eta", il) << " phi: " << _vc->get("Jet_phi", il) << " puId: " << _vc->get("Jet_puId", il) << endl;
+        }
+        for(size_t il=0;il<_vc->get("nDiscJet");il++) {
+            cout << "nDiscJet " << il << " pt: " << _vc->get("DiscJet_pt", il)  << " eta: " << _vc->get("DiscJet_eta", il) << " phi: " << _vc->get("DiscJet_phi", il) << " puId: " << _vc->get("DiscJet_puId", il) << endl;
+        }
         cout << "selected jets: " << endl;
         for(size_t il=0;il<_jets.size();il++) {
             cout << il << " pt: " << _jets[il]->pt() << " " << "eta: " << _jets[il]->eta() << " "<< "phi: " << _jets[il]->phi() <<  endl;
-        }
+        } 
         cout << "tight leptons: " << endl;
         for(size_t il=0;il<_tightLepsPtCutMllCut.size();il++) {
             cout << il << " pt: " << _tightLepsPtCutMllCut[il]->pt() << " eta: " << _tightLepsPtCutMllCut[il]->eta() << " phi: " << _tightLepsPtCutMllCut[il]->phi() <<" flavor: " << _tightLepsPtCutMllCut[il]->pdgId() <<" sip3d: " << _vc->get("LepGood_sip3d", _tightLepsPtCutMllCutIdx[il]) << " miniIso: " << _vc->get("LepGood_miniRelIso", _tightLepsPtCutMllCutIdx[il]) << " ptrel: " << _vc->get("LepGood_jetPtRelv2", _tightLepsPtCutMllCutIdx[il]) << " ptratio: " << _vc->get("LepGood_jetPtRatiov2", _tightLepsPtCutMllCutIdx[il]) <<endl;
@@ -1750,8 +1754,9 @@ void SUSY3L::advancedSelection(int WF){
             else{setWorkflow(kOffZBaseline_Fake); offset = kOnZSR017_Fake;}
         }
         if((offset== kOnZSR017 || offset== kOnZSR017_Fake ) && wf-offset == 16) fill( "SRS", wf-offset-1 , _weight );
-        else fill( "SRS", wf-offset , _weight );
-        
+        else { fill( "SRS", wf-offset , _weight );
+	}        
+
         setWorkflow(wf);
         if(getCurrentWorkflow()==kGlobal_Fake){cout << "WARNING " << offset <<  endl;}
         counter("signal region categorization");
@@ -2555,7 +2560,6 @@ void SUSY3L::fillHistos(bool additionalPlots){
         return: none
     */
     if(!_doPlots) return; 
-
     //event observables
     fill("HT"       , _HT                   , _weight);
     fill("MET"      , _met->pt()            , _weight);

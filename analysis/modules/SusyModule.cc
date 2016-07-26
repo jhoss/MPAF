@@ -993,12 +993,13 @@ SusyModule::cleanJets(CandList* leptons,
 
     for(int ij=0;ij<_vc->get("n"+jType+ext);ij++) {
       if(_vc->get(jType+ext+"_id",ij)<1) continue;
-      if(std::abs(_vc->get(jType+"_eta",ij))>2.4) continue; //introduced in RA7 sync round 3
+      if(std::abs(_vc->get(jType+ext+"_eta",ij))>2.4) continue; //introduced in RA7 sync round 3
       
       Candidate* jet=Candidate::create(_vc->get(jType+ext+"_pt", ij),
 				       _vc->get(jType+ext+"_eta", ij),
 				       _vc->get(jType+ext+"_phi", ij) );
 
+      
       jets.push_back(jet);
       bvals.push_back( _vc->get(jType+ext+"_btagCSV",ij)<0.80 );//0.814
       tmpIdxs.push_back(make_pair(jType+ext, ij));
@@ -1264,45 +1265,35 @@ SusyModule::bTagSF(CandList& jets ,
       if(jetIdx[i].first==bJetIdx[iv].first && jetIdx[i].second==bJetIdx[iv].second) { find=true; break;}
     }
 
-    /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
-      cout << "jet pt : " << _vc->get("Jet_pt", i) << endl;
-      cout << "jet MC flavor : " << _vc->get("Jet_mcFlavour", i) << endl;
-      cout << "flavor: " << flavor << endl;
-      cout << "find: " << find << endl;
-      }*/
-
+    // cout<<i<<" --> "<< (jetIdx[i].first+" pt : ") << _vc->get(jetIdx[i].first+"_pt", jetIdx[i].second)<<"  <>  "<<jets[i]->pt()<<"  <>  "<<jets[i]->eta()<<" // "<<flavor<<"  "<<find << endl;
+    // cout << "jet MC flavor : " << _vc->get("Jet_mcFlavour", i) << endl;
+    // cout << "flavor: " << flavor << endl;
+    // cout << "find: " << find << endl;
+    
 
 
     float fsSF=1.;
     if(fastSim) fsSF=bTagMediumScaleFactorFastSim(jets[i], flavor, fsst);
-    // cout<<fsSF<<endl;
+    //cout<<"fs "<<fsSF<<endl;
     //fsSF=1;
 
     if(find){
       pdata*=bTagMediumEfficiency(jets[i], flavor) * 
 	bTagMediumScaleFactor(jets[i], flavor, st)*fsSF;
       pmc*=bTagMediumEfficiency(jets[i], flavor)*fsSF;
-      /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
-        cout << "if find" << endl;
-        cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
-        cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
-	}*/
-
-   
+     
+        // cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
+        // cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
     
     }
     else {
       pdata*=(1-bTagMediumEfficiency(jets[i], flavor) * 
 	      bTagMediumScaleFactor(jets[i], flavor, st)*fsSF);
       pmc*=(1-bTagMediumEfficiency(jets[i], flavor)*fsSF);
-      /*if(_vc->get("evt") == _evt && _vc->get("lumi")== _lumi){
-        cout << "if !find" << endl;
-        cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
-        cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
-	}*/
-
-
-  
+      
+      // cout << "eff: " << bTagMediumEfficiency(jets[i], flavor) << endl;
+      // cout << "SF: " << bTagMediumScaleFactor(jets[i], flavor, st) << endl;
+      
     }
   }
 
@@ -2682,6 +2673,7 @@ void
 SusyModule::applyLeptonSF(float pt, float eta, float pdgId, bool isEmuIso, float& weight, int var) {
 
   if(std::abs(pdgId)==11) {
+    weight *= getSingleSF("eleRecoSFDb", pt, std::abs(eta), var);
     weight *= getSingleSF("eleIdSFIsoDb", pt, std::abs(eta), var);
     weight *= getSingleSF("eleConvSFIsoDb", pt, std::abs(eta), var);
     weight *= getSingleSF("eleChargeSFIsoDb", pt, std::abs(eta), var);
@@ -2692,8 +2684,9 @@ SusyModule::applyLeptonSF(float pt, float eta, float pdgId, bool isEmuIso, float
      
 
   } else if(std::abs(pdgId)==13) {
+    weight *= getSingleSF(((pt>10)?"muHIPHSFDb":"muHIPLSFDb"), pt, std::abs(eta), var);
     weight *= getSingleSF("muIdSFDb", pt, std::abs(eta), var);
-    //weight *= getSingleSF("muIsoSFDb", pt, std::abs(eta), var); //not yet available
+    weight *= getSingleSF("muIsoSFDb", pt, std::abs(eta), var); //not yet available
     weight *= getSingleSF("muDxyzSFDb", pt, std::abs(eta), var);
     weight *= getSingleSF("muSIPSFDb", pt, std::abs(eta), var);
   }
