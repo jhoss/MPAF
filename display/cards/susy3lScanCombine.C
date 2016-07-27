@@ -5,14 +5,14 @@ void susy3l_scanSigBENCH(){
 
     //general parameters ********************* general parameters
     //string sig="fs_t1ttttBENCH";
-    string sig="fs_t5qqqqvvBENCH";
-    bool allSR = false;
-    bool aggregate = true;
+    string sig="fs_t1ttttBENCH";
+    bool allSR = true;
+    bool aggregate = false;
 
     string dir="SUSY3L";
-    string fileName="merged_4fb";
-    if(sig=="fs_t1ttttBENCH") string fileList="merged_v2_4fb_T1tttt_MASS"; //susy3lUnc
-    if(sig=="fs_t5qqqqvvBENCH") string fileList="merged_v2_4fb_T5qqqqVV_noDM_MASS"; //susy3lUnc
+    string fileName="merged_12fb";
+    if(sig=="fs_t1ttttBENCH") string fileList="merged_12_T1tttt_MASS"; //susy3lUnc
+    if(sig=="fs_t5qqqqvvBENCH") string fileList="merged_v2_12fb_T5qqqqVV_noDM_MASS"; //susy3lUnc
     if(sig=="fs_t6ttww_50BENCH") string fileList="merged_2fb_T6ttWWMASS"; //susy3lUnc
     if(sig=="fs_t5tttt_degenBENCH") string fileList="merged_2fb_T5ttttMASS"; //susy3lUnc
   

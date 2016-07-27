@@ -419,7 +419,7 @@ void SUSY3L::initialize(){
         addManualSystSource("pu",SystUtils::kNone); 
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
-        //addManualSystSource("fs_lep",SystUtils::kNone);
+        addManualSystSource("fs_lep",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
 	    addManualSystSource("met_fast",SystUtils::kNone);

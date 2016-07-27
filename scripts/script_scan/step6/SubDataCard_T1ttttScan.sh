@@ -22,10 +22,10 @@ NUMBER=( 1 )
 for nr in ${NUMBER[@]}; do
 
 
-    for i in `ls $MPAF/workdir/stats/SUSY3L/merged_v2_4fb_T1tttt_mG_*_mN_*.dat`; do
+    for i in `ls $MPAF/workdir/stats/SUSY3L/merged_12_T1tttt_mG_*_mN_*.dat`; do
     #while [[ $N -lt ${#SIGS[*]} ]]; do
 
-        tmp=${i#"$MPAF/workdir/stats/SUSY3L/merged_v2_4fb_T1tttt_mG_"}
+        tmp=${i#"$MPAF/workdir/stats/SUSY3L/merged_12_T1tttt_mG_"}
         mass=${tmp%".dat"}
        
         #echo 'bench'
