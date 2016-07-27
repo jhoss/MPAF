@@ -419,7 +419,7 @@ void SUSY3L::initialize(){
         addManualSystSource("pu",SystUtils::kNone); 
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
-        addManualSystSource("fs_lep",SystUtils::kNone);
+        //addManualSystSource("fs_lep",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
 	    addManualSystSource("met_fast",SystUtils::kNone);
@@ -1054,7 +1054,7 @@ bool SUSY3L::collectKinematicObjects(){
 
     //clean jets
     _susyMod->cleanJets( &_fakableLepsPtCut, _jets, _jetsIdx, _bJets, _bJetsIdx,
-		       _lepJets, _lepJetsIdx, _jetThreshold, _bjetThreshold, getUncName()=="jes", getUncDir() );
+			 _lepJets, _lepJetsIdx, _jetThreshold, _bjetThreshold, (!_vc->get("isData") && getUncName()=="jes"), getUncDir() );
     _nJets = _jets.size();
     _nBJets = _bJets.size();
     
@@ -1063,7 +1063,7 @@ bool SUSY3L::collectKinematicObjects(){
  
     //create met candidate for every event
     string ext="met";
-    if((isInUncProc() &&  getUncName()=="jes") )
+    if((isInUncProc() &&  getUncName()=="jes") && !_vc->get("isData") )
         ext += ((SystUtils::kUp==getUncDir())?"_jecUp":"_jecDown");
     _met = Candidate::create(_vc->get(ext+"_pt"), _vc->get(ext+"_phi") );
     // if(!_vc->get("isData") && (isInUncProc() &&  getUncName()=="met_fast") )
@@ -3128,8 +3128,8 @@ void SUSY3L::systUnc(){
     if(_sampleName.find("GGHZZ4L") != string::npos || _sampleName.find("VHToNonbb") != string::npos ||_sampleName.find("ZZTo4L") != string::npos ||_sampleName.find("WWZ") != string::npos ||_sampleName.find("WZZ") != string::npos ||_sampleName.find("ZZZ") != string::npos ||_sampleName.find("WWW") != string::npos ||_sampleName.find("TTTT") != string::npos ||_sampleName.find("tZq_ll") != string::npos ||_sampleName.find("TGJets") != string::npos ||_sampleName.find("TTGJets") != string::npos ||_sampleName.find("WGToLNuG") != string::npos ||_sampleName.find("ZGTo2LG") != string::npos ||_sampleName.find("TTZ") != string::npos || _sampleName.find("TTW") != string::npos || _sampleName.find("TTHnobb_pow") != string::npos || _sampleName.find("TTLLJets_m1to10") != string::npos || _sampleName.find("T1tttt") != string::npos || _sampleName.find("T6ttWW") != string::npos || _sampleName.find("T5qqqq") != string::npos || _fastSim){
 
         //lumi
-        if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kUp   == getUncDir() ){_weight *= 1+lumiUnc;}
-	    if((isInUncProc() &&  getUncName()=="lumi") && SystUtils::kDown == getUncDir() ){_weight *= 1-lumiUnc;}
+      if((isInUncProc() &&  getUncName()=="lumi" && !_vc->get("isData")) && SystUtils::kUp   == getUncDir() ){_weight *= 1+lumiUnc;}
+	    if((isInUncProc() &&  getUncName()=="lumi"&& !_vc->get("isData")) && SystUtils::kDown == getUncDir() ){_weight *= 1-lumiUnc;}
     }
 
     //rare processes
