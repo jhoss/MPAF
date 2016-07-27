@@ -369,16 +369,7 @@ void SUSY3L::initialize(){
     }
 
 
-    //load lepton scale factors
-    //fastSim muons
-    //_dbm->loadDb("FastSimMuID", "lepSF_RA7/fastSim/muons/sf_mu_mediumID.root", "histo3D" );
-    //_dbm->loadDb("FastSimMuIP2D", "lepSF_RA7/fastSim/muons/sf_mu_tightIP2D.root", "histo3D" );
-    //_dbm->loadDb("FastSimMuIP3D", "lepSF_RA7/fastSim/muons/sf_mu_tightIP3D.root", "histo3D" );
-    //_dbm->loadDb("FastSimMuISO", "lepSF_RA7/fastSim/muons/sf_mu_multi.root", "histo3D" );
-    //fastSim electrons
-    //_dbm->loadDb("FastSimElIDandIP", "lepSF_RA7/fastSim/electrons/sf_el_tight2d3dIDEmu.root", "histo3D" );
-    //_dbm->loadDb("FastSimElISO", "lepSF_RA7/fastSim/electrons/sf_el_multi.root", "histo3D" );
-   
+  
     //fullsim lepton SF
     //electrons
     //_dbm->loadDb("eleIsoSFNonDb","db2016/electronScaleFactors.root","GsfElectronToTight2D3D");
@@ -392,10 +383,16 @@ void SUSY3L::initialize(){
     _dbm->loadDb("muIsoSFDb","db2016/TnP_MuonID_NUM_MultiIsoLoose_DENOM_MediumID_VAR_map_pt_eta.root","pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
     _dbm->loadDb("muTrkSFDb","db2016/general_tracks_and_early_general_tracks_corr_ratio.root","mutrksfptg10");
     
-    //fastSim TODO: to be added
-    //electrons
-    //muons
-
+    //fastSim 
+    //fastSim muons
+    _dbm->loadDb("FastSimMuID", "db2016/sf_mu_medium.root", "histo2D" );
+    _dbm->loadDb("FastSimMuIP2D", "db2016/sf_mu_tightIP2D.root", "histo2D" );
+    _dbm->loadDb("FastSimMuIP3D", "db2016/sf_mu_tightIP3D.root", "histo2D" );
+    _dbm->loadDb("FastSimMuISO", "db2016/sf_mu_mediumID_multiL.root", "histo2D" );
+    //fastSim electrons
+    _dbm->loadDb("FastSimElIDandIP", "db2016/sf_el_tight2d3dIDEmu.root", "histo2D" );
+    _dbm->loadDb("FastSimElISO", "db2016/sf_el_multiMedium.root", "histo2D" );
+ 
 
     //load pile-up weights 80X
     _dbm->loadDb("puWeights","db2016/puWeights_12fb_63mb.root","puw");
@@ -604,14 +601,15 @@ void SUSY3L::run(){
     counter("lepton SF");
    
     //fastSim lepton scale factors
-    //if(_fastSim){   
-    //    _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut, _vc->get("nTrueInt"));
-    //    //uncertainties
-    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
-    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, 1);
-    //    if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
-    //        _weight *= _susyMod->getVarWeightFastSimLepSFRA7(_tightLepsPtCutMllCut, -1);
-    //}
+    if(_fastSim){   
+        _weight*=_susyMod->applyFastSimLepSfRA7(_tightLepsPtCutMllCut);
+        //uncertainties
+        if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kUp==getUncDir() )
+            _weight *= (1+0.02*_tightLepsPtCutMllCut.size());
+        if((isInUncProc() &&  getUncName()=="fs_lep") && SystUtils::kDown==getUncDir() )
+            _weight *= (1-0.02*_tightLepsPtCutMllCut.size());
+    }
+    counter("fs lepton SF");
     
     //HLT efficiency correction
     if(!_vc->get("isData") && !_closure ) {
