@@ -39,7 +39,7 @@ void susy3l_scanSigBENCH(){
  
     //===============================================================
   
-    float kfac = 0.55555555;
+    float kfac = 0.4444444;
 
     if(sig=="fs_t1ttttBENCH") md.addDataCardSigSample("T1tttt_MASS",sig);
     if(sig=="fs_t6ttww_50BENCH") md.addDataCardSigSample("T6ttWWMASS",sig);
