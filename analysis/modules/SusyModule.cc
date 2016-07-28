@@ -2573,7 +2573,7 @@ SusyModule::vetoFSBadJetEvent(bool isJESVar, int dir, const CandList& leptons) {
 
       float mcPt=_vc->get(jType+ext+"_mcPt", ij);
     
-      if(mcPt!=0 && _vc->get(jType+ext+"_chHEF")<0.1 )
+      if(mcPt==0 && _vc->get(jType+ext+"_chHEF")<0.1 )
 	return false;
     }
   }
