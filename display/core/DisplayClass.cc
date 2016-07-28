@@ -1482,7 +1482,7 @@ DisplayClass::drawDataMCRatio() {
     }
   }//addsyst  
 
-  emptyHisto->GetYaxis()->SetRangeUser( 0.1, 1.9);
+  emptyHisto->GetYaxis()->SetRangeUser( 0.1, 2.7);
   emptyHisto->GetXaxis()->SetNdivisions(_Xdiv[0],_Xdiv[1],_Xdiv[2]);
   emptyHisto->GetYaxis()->SetNdivisions(4,_Ydiv[1],_Ydiv[2]);
   emptyHisto->GetXaxis()->SetTitle( (_xtitle+" ").c_str() );
@@ -1502,7 +1502,7 @@ DisplayClass::drawDataMCRatio() {
  
   ratio->SetMarkerStyle(20); 
   ratio->SetMarkerColor(1); 
-  ratio->GetYaxis()->SetRangeUser(  0.1, 1.9);
+  ratio->GetYaxis()->SetRangeUser(  0.1, 2.7);
   ratio->GetXaxis()->SetNdivisions(_Xdiv[0],_Xdiv[1],_Xdiv[2]);
   ratio->GetYaxis()->SetNdivisions(4,_Ydiv[1],_Ydiv[2]);
   ratio->GetXaxis()->SetTitle( (_xtitle+"_").c_str() );
