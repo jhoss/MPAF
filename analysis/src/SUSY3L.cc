@@ -529,8 +529,10 @@ void SUSY3L::run(){
     if(_fastSim) {
         if( !_susyMod->vetoFSBadJetEvent(getUncName()=="jes", getUncDir(), _looseLeps)) return;
     }
+    counter("fastSim jet cleaning");
 
     if(_fastSim && !checkMassBenchmark()) return;
+    counter("check mass benchmark");
 
     //check what kind of MC sample is used
     checkSample();
@@ -585,6 +587,7 @@ void SUSY3L::run(){
 	        _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, false, _weight );
         }
     }
+    counter("fs ISR");
     
     //lepton scale factors
     if(!_vc->get("isData") && !_closure ){
@@ -741,7 +744,7 @@ void SUSY3L::defineOutput(){
     _hm->addVariable("NBJets"    ,   20,   0.0,   20.0, "N_{b-jet}"                                             );
     _hm->addVariable("NJets"     ,   20,   0.0,   20.0, "N_{jet}"                                               ); 
     _hm->addVariable("MT"               ,  400,    0.0,  400.0,    "M_{T} (GeV)"                               );
-    _hm->addVariable("pt_1st_lepton"    ,  200,    0.0,  200.0,    "p_{T} leading lepton (GeV)"                );
+    _hm->addVariable("pt_1st_lepton"    ,  300,    0.0,  300.0,    "p_{T} leading lepton (GeV)"                );
     _hm->addVariable("pt_2nd_lepton"    ,  200,    0.0,  200.0,    "p_{T} sub-leading lepton (GeV)"            );
     _hm->addVariable("pt_3rd_lepton"    ,  200,    0.0,  200.0,    "p_{T} 3rd lepton (GeV)"                    );
     _hm->addVariable("flavor"           ,  5,      0.0,  5.0,      "flavor (N_{eee}/N_{#muee}/N_{#mu#mue}/N_{#mu#mu#mu}/N_{>3 leptons})" );
@@ -3040,7 +3043,7 @@ bool SUSY3L::checkMassBenchmark(){
     if(_sampleName.find(s)==string::npos) return false;
  
     float XS = _dbm->getDBValue(_susyProcessName+"Xsect",M1);
-    //cout<<XS<<"  "<<_nProcEvtScan<<endl;
+    //cout<<XS<<"  "<<M1<< " "<< _nProcEvtScan<<endl;
     _weight *= XS/_nProcEvtScan;
     
     return true;
@@ -3055,7 +3058,7 @@ void SUSY3L::loadScanHistogram(){
         string mpafenv=string(getenv ("MPAF"))+"/workdir/database/db2016/histoScan"+_susyProcessName+".root";
         TFile* file=new TFile(mpafenv.c_str(),"read");
         _hScanWeight=(TH3D*)file->Get("CountSMS");
-	_hScanWeight2D=(TH2D*)file->Get("CountSMS2D");
+	    _hScanWeight2D=(TH2D*)file->Get("CountSMS2D");
     }
 }
 
