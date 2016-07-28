@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-//void susy3l_data_VARIABLE_REGION() {
-void susy3l_data() {
+void susy3l_data_VARIABLE_REGION() {
+//void susy3l_data() {
     md.refresh();
 
 
@@ -14,8 +14,8 @@ void susy3l_data() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
+    string fileName="merged_v2_12fb_Bkg"; //root
+    string fileList="merged_12fb_Bkg"; //dat
 
 
     string hName="";
@@ -33,12 +33,12 @@ void susy3l_data() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =true;
+    bool manual =false;
     if(!manual) string region = "REGION";
-    else string region = "OffZBaseline";
+    else string region = "FakeCR";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
-    else{string obs = "nbjets";}
+    else{string obs = "met";}
         
     float lumi=12900; //pb-1 19470
     float energy=13; //TeV
@@ -114,7 +114,7 @@ void susy3l_data() {
     }
     if(obs == "pt1"){
         md.setObservables("pt_1st_lepton" + region);
-        double rangeX[2]={0,260};
+        double rangeX[2]={0,200};
         if(region=="WZCR"){int binning = 10; bool logYScale=false;}
         else if(region=="FakeCR"){int binning=25; double rangeX[2]={0,150};bool logYScale=false;}
         else int binning=20;
@@ -466,8 +466,8 @@ void susy3l_data() {
         string sr= "global_";
         sr += categs[i];
         //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, false, true);
-        else md.getStatistics(sr, false, false);
+        if(i==0) md.getStatistics(sr, true, true);
+        else md.getStatistics(sr, true, false);
     }
     cout << "______________________________________________" <<endl;
     cout << "Off-Z:" << endl;
@@ -475,8 +475,8 @@ void susy3l_data() {
         string sr= "global_";
         sr += categs[i+17];
         //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, false, true);
-        else md.getStatistics(sr, false, false);
+        if(i==0) md.getStatistics(sr, true, true);
+        else md.getStatistics(sr, true, false);
     }
     }
 

@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-void susy3l_appl_VARIABLE_REGION() {
-//void susy3l_appl() {
+//void susy3l_appl_VARIABLE_REGION() {
+void susy3l_appl() {
     md.refresh();
 
 
@@ -14,7 +14,7 @@ void susy3l_appl_VARIABLE_REGION() {
     //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
     
-    string fileName="merged_v2_12fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
+    string fileName="merged_12fb"; //was treeName in LUNE susy_cut_lowpt
     string fileList="merged_12fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
 
@@ -24,7 +24,7 @@ void susy3l_appl_VARIABLE_REGION() {
     bool closure = false;
     bool nlo_vs_lo = false;
     bool fixLeg = true;
-    bool printTable = false;
+    bool printTable = true;
 
     //if(md.isInitStatus()) {
     md.anConf.configureNames( dir, fileName, fileList );//, hName );
@@ -33,7 +33,7 @@ void susy3l_appl_VARIABLE_REGION() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =false;
+    bool manual =true;
     if(!manual) string region = "REGION";
     else string region = "OffZBaseline";
 
@@ -256,7 +256,7 @@ void susy3l_appl_VARIABLE_REGION() {
     //md.dp.loadAutoBinning(autoBinFile);
 
     //Systematic uncertainties ********************************
-    bool addSystematics=true;
+    bool addSystematics=false;
   
     bool mcStatSyst=true;
     string systSources="";
@@ -319,10 +319,10 @@ void susy3l_appl_VARIABLE_REGION() {
 
 
     //non-prompt
-    //md.anConf.addSample( "Fake:TTJets"                               ,  "non-prompt"       , 18            );
-    md.anConf.addSample( "Fake:TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
-    md.anConf.addSample( "Fake:TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
-    md.anConf.addSample( "Fake:TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
+    md.anConf.addSample( "Fake:TTJets"                               ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_DiLepton"                      ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_SingleLeptonFromTbar"          ,  "non-prompt"       , 18            );
+    //md.anConf.addSample( "Fake:TTJets_SingleLeptonFromT"             ,  "non-prompt"       , 18            );
     md.anConf.addSample( "Fake:DYJetsToLL_M10to50"                   ,  "non-prompt"       , 18            );
     md.anConf.addSample( "Fake:DYJetsToLL_M50"                       ,  "non-prompt"       , 18            );
     md.anConf.addSample( "Fake:TBar_tWch"                            ,  "non-prompt"       , 18            );
@@ -449,18 +449,18 @@ void susy3l_appl_VARIABLE_REGION() {
     for(int i=0;i<17;i++){
         string sr= "global_";
         sr += categs[i];
-        //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, false, true);
-        else md.getStatistics(sr, false, false);
+        sr += "_Fake";
+        if(i==0) md.getStatistics(sr, true, true);
+        else md.getStatistics(sr, true, false);
     }
     cout << "______________________________________________" <<endl;
     cout << "Off-Z:" << endl;
     for(int i=0;i<15;i++){
         string sr= "global_";
         sr += categs[i+17];
-        //sr += "_Fake";
-        if(i==0) md.getStatistics(sr, false, true);
-        else md.getStatistics(sr, false, false);
+        sr += "_Fake";
+        if(i==0) md.getStatistics(sr, true, true);
+        else md.getStatistics(sr, true, false);
     }
     }
 

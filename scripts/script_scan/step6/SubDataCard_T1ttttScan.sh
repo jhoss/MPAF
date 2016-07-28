@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 sub() {
     echo $1
     cd $MPAF/display
@@ -65,7 +66,7 @@ for nr in ${NUMBER[@]}; do
         #break
     done
 
-    sleep 10
+    sleep 20
     mkdir -p $MPAF/workdir/datacards/SR$nr/
     mv $MPAF/workdir/datacards/ra7_* $MPAF/workdir/datacards/SR$nr/
 

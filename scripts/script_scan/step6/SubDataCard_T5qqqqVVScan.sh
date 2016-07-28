@@ -14,10 +14,10 @@ NJ=0
 NSR=0
 
 N=0
-for i in `ls $MPAF/workdir/stats/SUSY3L/merged_v2_4fb_T5qqqqVV_noDM_mG_*_mN_*.dat`; do
+for i in `ls $MPAF/workdir/stats/SUSY3L/merged_12_T5qqqqVV_noDM_mG_*_mN_*.dat`; do
 #while [[ $N -lt ${#SIGS[*]} ]]; do
 
-    tmp=${i#"$MPAF/workdir/stats/SUSY3L/merged_v2_4fb_T5qqqqVV_noDM_mG_"}
+    tmp=${i#"$MPAF/workdir/stats/SUSY3L/merged_12_T5qqqqVV_noDM_mG_"}
     mass=${tmp%".dat"}
        
     #echo 'bench'
