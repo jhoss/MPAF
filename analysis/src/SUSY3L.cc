@@ -142,8 +142,7 @@ void SUSY3L::initialize(){
     _vc->registerVar("TauGood_idAntiE"                 );     //tau electron discriminator
     _vc->registerVar("TauGood_idDecayMode"             );     //
     _vc->registerVar("TauGood_isoCI3hit"               );     //
-
-
+    
     vector<string> extsJEC({"","_jecUp","_jecDown"});
     for(unsigned int ie=0;ie<extsJEC.size();ie++) {
 
@@ -241,6 +240,7 @@ void SUSY3L::initialize(){
     _vc->registerVar("GenPart_phi"                     );
     _vc->registerVar("GenPart_pdgId"                   );
     _vc->registerVar("GenPart_motherId"                );
+    _vc->registerVar("GenPart_grandmotherId"           );
     _vc->registerVar("GenPart_mass"					   );
     _vc->registerVar("GenPart_charge"				   );
     _vc->registerVar("GenPart_status"				   );
@@ -416,10 +416,11 @@ void SUSY3L::initialize(){
         addManualSystSource("pu",SystUtils::kNone); 
         //fastSim only
         addManualSystSource("isr",SystUtils::kNone);
+        addManualSystSource("met_fast",SystUtils::kNone);
         addManualSystSource("fs_lep",SystUtils::kNone);
         addManualSystSource("fs_btag",SystUtils::kNone);
         addManualSystSource("scale",SystUtils::kNone);
-	    addManualSystSource("met_fast",SystUtils::kNone);
+	
     
         //uncertainties previously taken care of in display card 
         addManualSystSource("lumi",SystUtils::kNone);
@@ -443,7 +444,6 @@ void SUSY3L::initialize(){
         addManualSystSource("ttzLO",SystUtils::kNone);
         addManualSystSource("ttwLO",SystUtils::kNone);
       }
-	
       //addManualSystSource("ISR",SystUtils::kNone); //used to compute the normalization
     }
       
@@ -1672,7 +1672,7 @@ bool SUSY3L::multiLepSelection(){
 void SUSY3L::advancedSelection(int WF){
     /*
     */
-    
+ 
     // int offset = 0;
     // if(WF==kGlobal_Fake) offset=kOffZSR017;
    
@@ -1750,7 +1750,7 @@ void SUSY3L::advancedSelection(int WF){
 
 	    if(_fastSim && wf <kOnZSR001_Fake) { //MET fastsim ucnertainties
 	        if(!isInUncProc()) 
-                _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
+		     _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 0 );
 	        else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kUp )
 	            _weight*=_susyMod->getFSMETWeight(wf, _sampleName, _susyProcessName, false, 1 );
 	        else if(isInUncProc() && getUncName()=="met_fast" && getUncDir()==SystUtils::kDown )
@@ -3045,6 +3045,18 @@ bool SUSY3L::checkMassBenchmark(){
 
     if(_sampleName.find(s)==string::npos) return false;
  
+    if(_susyProcessName == "T5qqqqVV" || _susyProcessName == "T5qqqqVV_noDM") {
+      bool hasZ=false, hasW=false;
+      for(int ig=0;ig<_vc->get("nGenPart");ig++) {
+	if(hasZ && hasW) break;
+	if(std::abs(_vc->get("GenPart_pdgId",ig))==23 && (std::abs(_vc->get("GenPart_motherId",ig))>999999 || std::abs(_vc->get("GenPart_grandmotherId",ig))>999999) ) hasZ=true;
+	if(std::abs(_vc->get("GenPart_pdgId",ig))==24 && (std::abs(_vc->get("GenPart_motherId",ig))>999999 || std::abs(_vc->get("GenPart_grandmotherId",ig))>999999) ) hasW=true;
+      }
+      if(!hasZ || !hasW) return false;
+    }
+
+
+
     float XS = _dbm->getDBValue(_susyProcessName+"Xsect",M1);
     //cout<<XS<<"  "<<M1<< " "<< _nProcEvtScan<<endl;
     _weight *= XS/_nProcEvtScan;
