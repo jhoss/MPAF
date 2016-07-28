@@ -118,7 +118,7 @@ class smsPlotABS(object):
         textNLONLL.Draw()
         #self.c.textNLONLL = textNLONLL
         # fixed sparticle mass
-        textFixedMass = rt.TLatex(0.18,0.70,"  %s " %(self.model.fixMass))
+        textFixedMass = rt.TLatex(0.165,0.71,"  %s " %(self.model.fixMass))
         textFixedMass.SetNDC()
         textFixedMass.SetTextAlign(13)
         textFixedMass.SetTextFont(42)

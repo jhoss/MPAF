@@ -31,9 +31,9 @@ class sms():
         self.diagX = array('d',[0,20000])
         self.diagY = array('d',[-mT, 20000-mT])        
         self.diagText = 'm_{#tilde{g}} - m_{#tilde{#chi}^{0}_{1}} = 2 (m_{W} + m_{b})'
-        self.diagAngle = 34.6
-        self.diagTextX = 0.2
-        self.diagTextY = 0.47
+        self.diagAngle = 40.85
+        self.diagTextX = 0.22
+        self.diagTextY = 0.44
         # turn off diagonal lines
         self.diagOn = True
         self.fixMass = ''
@@ -161,9 +161,9 @@ class sms():
         self.diagX = array('d',[0,20000])
         self.diagY = array('d',[-mT, 20000-mT])        
         self.diagText = 'm_{#tilde{g}} = m_{#tilde{#chi}^{0}_{1}}'
-        self.diagAngle = 29.01
-        self.diagTextX = 0.2
-        self.diagTextY = 0.53
+        self.diagAngle = 40.9
+        self.diagTextX = 0.22
+        self.diagTextY = 0.5
         # turn off diagonal lines
         self.diagOn = True
         self.fixMass = 'm_{#tilde{#chi}^{#pm}_{1}} = 0.5 (m_{#tilde{g}} + m_{#tilde{#chi}^{0}_{1}})'

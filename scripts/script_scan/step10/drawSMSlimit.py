@@ -150,8 +150,8 @@ h_lims_yn   = {} # limits in excluded/non-exluded, interpolated
 h_lims_xs   = {} # limits in cross-section, interpolated
 g2_lims_mu  = {} # TGraph2D limits in signal-strength, automatic interpolation
 
-m1min, m1max = 0, 1700
-m2min, m2max = 0, 1700
+m1min, m1max = 0, 2100
+m2min, m2max = 0, 2100
 binSize = 25
 
 mass1 = "mGlu" if "T1tttt" in model or "T5qqqqVV" in model or "T5ttttdeg" in model else "mSq" if model=="T2qq" else "mSb" if model=="T2bb" else "mSt" if model=="T2tt" else "m1"
