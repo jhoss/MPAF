@@ -576,17 +576,20 @@ void SUSY3L::run(){
    
     //ISR variation for fastsim
     if(_fastSim){
-      //if(isInUncProc() && getUncName()=="ISR") 
-        _susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, false, _weight );
-        if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kUp ){
-	        //_susyMod->applyISRWeight(0, 1 , _weight); // up variation
-	        _susyMod->applyISRJetWeight(_jetsIdx,1, _sampleName, false, _weight );
+        if(!isInUncProc() )
+            _susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, false, _weight );
+        else if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kUp ){
+            //_susyMod->applyISRWeight(0, 1 , _weight); // up variation
+            _susyMod->applyISRJetWeight(_jetsIdx,1, _sampleName, false, _weight );
         }
         else if(isInUncProc() && getUncName()=="isr" && getUncDir()==SystUtils::kDown ){
-	        //_susyMod->applyISRWeight(0, -1, _weight); // down variation
-	        _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, false, _weight );
+            //_susyMod->applyISRWeight(0, -1, _weight); // down variation
+            _susyMod->applyISRJetWeight(_jetsIdx,-1, _sampleName, false, _weight );
         }
-    }
+        else {
+            _susyMod->applyISRJetWeight(_jetsIdx,0, _sampleName, false, _weight );
+        }
+    }   
     counter("fs ISR");
     
     //lepton scale factors
