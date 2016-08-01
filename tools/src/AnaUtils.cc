@@ -994,7 +994,7 @@ AnaUtils::printTables(const string& categ, bool latexOnly, bool header) {
     if(_itEIMap == _effMap[ _kMC ][ icat ].end() ) break; //out of the loop if no MC
 
     if(header) {
-      cout<<" Cut  "<<fixed<<setprecision(2);
+      cout<<" Cut  "<<fixed<<setprecision(1);
       for(size_t ids=0;ids<dsNames.size();ids++) { //_itEMap
         cout<<" & "<<dsNames[ ids ]<<"   ";
       }
@@ -1017,6 +1017,7 @@ AnaUtils::printTables(const string& categ, bool latexOnly, bool header) {
         else {
           if(_itEIMap->second.sumw>0.000001 ) {
             cout<<_itEIMap->second.sumw;
+            //if(dsNames[id]=="data") continue;
             cout<<" $\\pm$ "<<sqrt(_itEIMap->second.sumw2);
 
 	    EffST eST=_itEIMap->second;
