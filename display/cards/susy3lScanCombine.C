@@ -1,17 +1,20 @@
 MPAFDisplay md;
 
 void susy3l_scanSigBENCH(){
+//void susy3lScanCombine(){
     md.refresh();
 
     //general parameters ********************* general parameters
-    //string sig="fs_t1ttttBENCH";
-    string sig="fs_t5qqqqvvBENCH";
+    //string sig="fs_t1tttt_mG_1200_mN_100";
+    string sig="fs_t1ttttBENCH";
+    //string sig="fs_t5qqqqvvBENCH";
     bool allSR = true;
     bool aggregate = false;
 
     string dir="SUSY3L";
     string fileName="merged_12fb";
     if(sig=="fs_t1ttttBENCH") string fileList="merged_12_T1tttt_MASS"; //susy3lUnc
+    if(sig=="fs_t1tttt_mG_1200_mN_100") string fileList="merged_12_T1tttt_mG_1200_mN_100"; //susy3lUnc
     if(sig=="fs_t5qqqqvvBENCH") string fileList="merged_12_T5qqqqVV_noDM_MASS"; //susy3lUnc
     if(sig=="fs_t6ttww_50BENCH") string fileList="merged_2fb_T6ttWWMASS"; //susy3lUnc
     if(sig=="fs_t5tttt_degenBENCH") string fileList="merged_2fb_T5ttttMASS"; //susy3lUnc
@@ -42,6 +45,7 @@ void susy3l_scanSigBENCH(){
     float kfac = 0.4444444;
 
     if(sig=="fs_t1ttttBENCH") md.addDataCardSigSample("T1tttt_MASS",sig);
+    if(sig=="fs_t1tttt_mG_1200_mN_100") md.addDataCardSigSample("T1tttt_m1200_m100",sig);
     if(sig=="fs_t6ttww_50BENCH") md.addDataCardSigSample("T6ttWWMASS",sig);
     if(sig=="fs_t5qqqqvvBENCH") md.addDataCardSigSample("T5qqqqVV_noDM_MASS",sig, kfac);
     if(sig=="fs_t5tttt_degenBENCH") md.addDataCardSigSample("T5ttttMASS",sig);
@@ -203,7 +207,7 @@ void susy3l_scanSigBENCH(){
         nBins = 2;
         //vcategs.push_back( "OffZSR013" );
         //vcategs.push_back( "OffZSR016" );
-        vcategs.push_back( "OnZSR016" );
+        vcategs.push_back( "OnZSR002" );
         vcategs.push_back( "OnZSR017" );
     }
     else{
@@ -237,6 +241,7 @@ void susy3l_scanSigBENCH(){
     }
 
     md.makeMultiDataCard(sig, vcategs, "selected", "ra7_"+sig);
+    //md.getStatistics("global_OffZSR016");
 
     gROOT->ProcessLine(".qqqqqqqqqqqqqq");
 }

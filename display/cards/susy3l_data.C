@@ -11,11 +11,11 @@ void susy3l_data_VARIABLE_REGION() {
     //string fileName="3l_test80Xskim"; //was treeName in LUNE susy_cut_lowpt
     //string fileList="3l_test80Xskim"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
 
-    //string fileName="merged_2fb_Bkg"; //was treeName in LUNE susy_cut_lowpt
-    //string fileList="merged_2fb_Bkg"; //CH: since AnaConfig needs a fileName to open, we need to put the data files into a different variable
-    
     string fileName="merged_v2_12fb_Bkg"; //root
+    //string fileName="merged_12fb"; //root
+    //string fileName="merge"; //root
     string fileList="merged_12fb_Bkg"; //dat
+    //string fileList="merged_12_T5qqqqVV_noDM_mG_800_mN_500"; //dat
 
 
     string hName="";
@@ -33,9 +33,9 @@ void susy3l_data_VARIABLE_REGION() {
  
     string sigs = "none"; 
     bool data = true;
-    bool manual =false;
+    bool manual =true;
     if(!manual) string region = "REGION";
-    else string region = "FakeCR";
+    else string region = "OffZBaseline";
 
     if(!manual){string obs = "VARIABLE" ;}    //njets, nbjets, met, ht, lep, zpeak, zpt, mt, pt1, pt2, pt3, mll
     else{string obs = "met";}
@@ -373,22 +373,26 @@ void susy3l_data_VARIABLE_REGION() {
  
     //signal
     if(sigs=="t"){
-    md.anConf.addSample( "T1tttt_mGo1200_mChi800"                       ,  "T1tttt (1200) x10 sig"     , kBlue-3, 10 );
-    md.anConf.addSample( "T1tttt_mGo1500_mChi100"                       ,  "T1tttt (1500) x10 sig"     , kBlue-3, 10  );
+    //md.anConf.addSample( "T1tttt_mGo1200_mChi800"                       ,  "T1tttt (1200) x10 sig"     , kBlue-3, 10 );
+    //md.anConf.addSample( "T1tttt_mGo1500_mChi100"                       ,  "T1tttt (1500) x10 sig"     , kBlue-3, 10  );
     //md.anConf.addSample( "T6ttWW_mSbot600_mCh425_mChi50"                ,  "T6ttWW (600) x10 sig"     , kMagenta+2 );
     //md.anConf.addSample( "T6ttWW_mSbot650_mCh150_mChi50"                ,  "T6ttWW (650) x10 sig"     , kMagenta+2 );
     //md.anConf.addSample( "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280"    ,  "T5t410 sig"     , kOrange+10  );
+    //md.anConf.addSample( "T1tttt_mG_1200_mN_100"    ,  "T1tttt (1200/100) sig"     , kBlue-3, -1  );
+    //md.anConf.addSample( "T1tttt_mG_1200_mN_700"    ,  "T1tttt (1200/700) sig"     , kBlue-3, -1  );
     }
     
     if(sigs=="q"){
-    md.anConf.addSample( "T5qqqqWZDeg_mGo1000_mCh315_mChi300_dilep"     ,  "T5q4WZ315 sig"  , kGreen+2  );
-    md.anConf.addSample( "T5qqqqWZDeg_mGo1000_mCh325_mChi300_dilep"     ,  "T5q4WZ325 sig"  , kMagenta  );
-    md.anConf.addSample( "T5qqqqWZ_mGo1200_mCh1000_mChi800_dilep"       ,  "T5q4WZ12 sig"   , kRed-6  );
-    md.anConf.addSample( "T5qqqqWZ_mGo1500_mCh800_mChi100_dilep"        ,  "T5q4WZ15 sig"   , kRed+3  );
+    //md.anConf.addSample( "T5qqqqWZDeg_mGo1000_mCh315_mChi300_dilep"     ,  "T5q4WZ315 sig"  , kGreen+2  );
+    //md.anConf.addSample( "T5qqqqWZDeg_mGo1000_mCh325_mChi300_dilep"     ,  "T5q4WZ325 sig"  , kMagenta  );
+    //md.anConf.addSample( "T5qqqqWZ_mGo1200_mCh1000_mChi800_dilep"       ,  "T5q4WZ12 sig"   , kRed-6  );
+    //md.anConf.addSample( "T5qqqqWZ_mGo1500_mCh800_mChi100_dilep"        ,  "T5q4WZ15 sig"   , kRed+3  );
     //md.anConf.addSample( "T5qqqqZZDeg_mGo1000_mCh315_mChi300_dilep"     ,  "T5q4ZZ315 sig"  , kGreen+3  );
     //md.anConf.addSample( "T5qqqqZZDeg_mGo1000_mCh325_mChi300_dilep"     ,  "T5q4ZZ325 sig"  , kMagenta+2  );
     //md.anConf.addSample( "T5qqqqZZ_mGo1200_mCh1000_mChi800_dilep"       ,  "T5q4ZZ12 sig"   , kRed-9  );
     //md.anConf.addSample( "T5qqqqZZ_mGo1500_mCh800_mChi100_dilep"        ,  "T5q4ZZ15 sig"   , kRed+1  );
+    //md.anConf.addSample( "T5qqqqVV_noDM_mG_1000_mN_100"    ,  "T5qqqqWZ (1000/100) sig"     , kBlue-3, -0.444444  );
+    md.anConf.addSample( "T5qqqqVV_noDM_mG_800_mN_500"    ,  "T5qqqqWZ (800/500) sig"     , kBlue-3, -0.444444  );
     }
     
     //data
@@ -480,7 +484,7 @@ void susy3l_data_VARIABLE_REGION() {
     }
     }
 
-    //md.getStatistics("global_OnZSR001");
+    //md.getStatistics("global_OnZSR016");
     
     md.savePlot("SUSY3L");
     // md.dp.addText(xt,yt,st,addText);
