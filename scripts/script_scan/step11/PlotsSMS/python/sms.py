@@ -36,7 +36,9 @@ class sms():
         self.diagTextY = 0.44
         # turn off diagonal lines
         self.diagOn = True
-        self.fixMass = ''
+        self.fixMass = 'SR 13 and 15 Off-Z'
+        self.fixSR = ''
+        self.fixSR2 = ''
  
     def T5ttttdeg(self):
         # model name
@@ -167,6 +169,8 @@ class sms():
         # turn off diagonal lines
         self.diagOn = True
         self.fixMass = 'm_{#tilde{#chi}^{#pm}_{1}} = 0.5 (m_{#tilde{g}} + m_{#tilde{#chi}^{0}_{1}})'
+        self.fixSR = 'SR 2 and 15b'
+        self.fixSR2 = 'On-Z'
  
  
 

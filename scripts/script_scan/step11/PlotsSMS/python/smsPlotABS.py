@@ -125,7 +125,24 @@ class smsPlotABS(object):
         textFixedMass.SetTextSize(0.035)
         textFixedMass.Draw()
         self.c.textFixedMass = textFixedMass
+        textSR = rt.TLatex(0.165,0.65,"  %s " %(self.model.fixSR))
+        textSR.SetNDC()
+        textSR.SetTextAlign(13)
+        textSR.SetTextFont(61)
+        textSR.SetTextSize(0.035)
+        textSR.Draw()
+        self.c.textSR = textSR
+        textSR2 = rt.TLatex(0.165,0.6155555,"  %s " %(self.model.fixSR2))
+        textSR2.SetNDC()
+        textSR2.SetTextAlign(13)
+        textSR2.SetTextFont(61)
+        textSR2.SetTextSize(0.035)
+        textSR2.Draw()
+        self.c.textSR2 = textSR2
  
+
+
+
 
 
     def Save(self,label):
