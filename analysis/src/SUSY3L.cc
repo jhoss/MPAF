@@ -1593,6 +1593,8 @@ bool SUSY3L::multiLepSelection(){
         //three or more tight leptons
         if((_exactlyThreeLep && _tightLepsPtCut.size()==3 && pass)||(!_exactlyThreeLep && _tightLepsPtCut.size()>=3 && pass)){
             counter("lepton multiplicity");
+            if(!((_exactlyThreeLep && _tightLepsPtCut.size()==3)||(!_exactlyThreeLep && _tightLepsPtCut.size()>=3))) continue;
+            counter(">= 3 tight leptons");
             if(!((_exactlyThreeLep && _tightLepsPtCutMllCut.size()==3)||(!_exactlyThreeLep && _tightLepsPtCutMllCut.size()>=3))) continue;
             counter("low mll veto");
             //require hard legs
