@@ -1,7 +1,7 @@
 MPAFDisplay md;
 
-void susy3l_data_VARIABLE_REGION() {
-//void susy3l_data() {
+//void susy3l_data_VARIABLE_REGION() {
+void susy3l_data() {
     md.refresh();
 
 
@@ -16,6 +16,11 @@ void susy3l_data_VARIABLE_REGION() {
     //string fileName="merge"; //root
     string fileList="merged_12fb_Bkg"; //dat
     //string fileList="merged_12_T5qqqqVV_noDM_mG_800_mN_500"; //dat
+    
+    //string fileName="3l_scanSig_T5qqqqVV_noDM_mG_1000_mN_100";
+    //string fileList="3l_scanSig_T5qqqqVV_noDM_mG_1000_mN_100";
+    //string fileName="3l_scanSig_T1tttt_mG_1200_mN_700";
+    //string fileList="3l_scanSig_T1tttt_mG_1200_mN_700";
 
 
     string hName="";
@@ -379,7 +384,7 @@ void susy3l_data_VARIABLE_REGION() {
     //md.anConf.addSample( "T6ttWW_mSbot650_mCh150_mChi50"                ,  "T6ttWW (650) x10 sig"     , kMagenta+2 );
     //md.anConf.addSample( "T5ttttDeg_mGo1000_mStop300_mCh285_mChi280"    ,  "T5t410 sig"     , kOrange+10  );
     //md.anConf.addSample( "T1tttt_mG_1200_mN_100"    ,  "T1tttt (1200/100) sig"     , kBlue-3, -1  );
-    //md.anConf.addSample( "T1tttt_mG_1200_mN_700"    ,  "T1tttt (1200/700) sig"     , kBlue-3, -1  );
+    md.anConf.addSample( "T1tttt_mG_1200_mN_700"    ,  "T1tttt (1200/700) sig"     , kBlue-3, -1  );
     }
     
     if(sigs=="q"){
@@ -391,8 +396,8 @@ void susy3l_data_VARIABLE_REGION() {
     //md.anConf.addSample( "T5qqqqZZDeg_mGo1000_mCh325_mChi300_dilep"     ,  "T5q4ZZ325 sig"  , kMagenta+2  );
     //md.anConf.addSample( "T5qqqqZZ_mGo1200_mCh1000_mChi800_dilep"       ,  "T5q4ZZ12 sig"   , kRed-9  );
     //md.anConf.addSample( "T5qqqqZZ_mGo1500_mCh800_mChi100_dilep"        ,  "T5q4ZZ15 sig"   , kRed+1  );
-    //md.anConf.addSample( "T5qqqqVV_noDM_mG_1000_mN_100"    ,  "T5qqqqWZ (1000/100) sig"     , kBlue-3, -0.444444  );
-    md.anConf.addSample( "T5qqqqVV_noDM_mG_800_mN_500"    ,  "T5qqqqWZ (800/500) sig"     , kBlue-3, -0.444444  );
+    md.anConf.addSample( "T5qqqqVV_noDM_mG_1000_mN_100"    ,  "T5qqqqWZ (1000/100) sig"     , kBlue-3, -0.444444  );
+    //md.anConf.addSample( "T5qqqqVV_noDM_mG_800_mN_500"    ,  "T5qqqqWZ (800/500) sig"     , kBlue-3, -0.444444  );
     }
     
     //data
@@ -484,7 +489,7 @@ void susy3l_data_VARIABLE_REGION() {
     }
     }
 
-    //md.getStatistics("global_OnZSR016");
+    //md.getStatistics("global_OnZBaseline");
     
     md.savePlot("SUSY3L");
     // md.dp.addText(xt,yt,st,addText);
