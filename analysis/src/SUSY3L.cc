@@ -644,6 +644,12 @@ void SUSY3L::run(){
     
     //end event reweighting
 
+    //gen matching
+    if(_doGenMatch) {
+        if(!passGenSelection()) return;
+    }
+    counter("gen matching");
+
   
     setWorkflow(kGlobal);	
 
@@ -1745,12 +1751,6 @@ void SUSY3L::advancedSelection(int WF){
     if((_vc->get("isData") == 1 && _met->pt()<450 && !_isFake) || !_isOnZ) return;
     */
 
-
-    //gen matching
-    if(!_vc->get("isData") && _doGenMatch && !_isFake) {
-        if(!passGenSelection()) return;
-        counter("gen matching");
-    }
     counter("selected");
     fillHistos(false);
 
