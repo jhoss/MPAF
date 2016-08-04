@@ -24,3 +24,6 @@ scripts/script_scan/step11/PlotsSMS/python/*.pyc
 scripts/script_scan/step10/xcheckPlots
 scripts/script_scan/step11/PlotsSMS/*.root
 scripts/script_scan/step11/PlotsSMS/*.pdf
+scripts/script_scan/significance/xcheckPlotsSignificance/*
+scripts/script_scan/significance/PlotsSMS/files/*
+scripts/script_scan/significance/PlotsSMS/plots/*
